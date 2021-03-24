@@ -11,7 +11,7 @@ Great laptop that offers many great features!####Great=O laptop=O that=O offers=
 they have done absolutely nothing to fix the computer problem.####they=O have=O done=O absolutely=O nothing=O to=O fix=O the=O computer=O problem=O .=O
  One night I turned the freaking thing off after using it, the next day I turn it on, no GUI, screen all dark, power light steady, hard drive light steady and not flashing as it usually does.####One=O night=O I=O turned=O the=O freaking=O thing=O off=O after=O using=O it=O ,=O the=O next=O day=O I=O turn=O it=O on=O ,=O no=O GUI=T-NEG ,=O screen=T-NEG all=O dark=O ,=O power=T-NEU light=T-NEU steady=O ,=O hard=T-NEG drive=T-NEG light=T-NEG steady=O and=O not=O flashing=O as=O it=O usually=O does=O .=O
 Still pretty pricey, but I've been putting off money for a while as a little Macbook Fund, and finally got to use it.####Still=O pretty=O pricey=O ,=O but=O I=O 've=O been=O putting=O off=O money=O for=O a=O while=O as=O a=O little=O Macbook=O Fund=O ,=O and=O finally=O got=O to=O use=O it=O .=O
-In the shop, these MacBooks are encased in a soft rubber enclosure - so you will never know about the razor edge until you buy it, get it home, break the seal and use it (very clever con).####In=O the=O shop=O ,=O these=O MacBooks=O are=O encased=O in=O a=O soft=O rubber=T-POS enclosure=T-POS ,=O so=O you=O will=O never=O know=O about=O the=O razor=O edge=T-NEG until=O you=O buy=O it=O ,=O get=O it=O home=O ,=O break=O the=O seal=O and=O use=O it=O very=O clever=O con=O .=O
+In the shop, these MacBooks are encased in a soft rubber enclosure - so you will never know about the razor edge until you buy it, get it home, break the seal and use it (very clever con).####In=O the=O shop=O ,=O these=O MacBooks=O are=O encased=O in=O a=O soft=O rubber=T-POS enclosure=T-POS so=O you=O will=O never=O know=O about=O the=O razor=O edge=T-NEG until=O you=O buy=O it=O ,=O get=O it=O home=O ,=O break=O the=O seal=O and=O use=O it=O very=O clever=O con=O .=O
 However, the multi-touch gestures and large tracking area make having an external mouse unnecessary (unless you're gaming).####However=O ,=O the=O multi-touch=T-POS gestures=T-POS and=O large=O tracking=T-POS area=T-POS make=O having=O an=O external=T-NEU mouse=T-NEU unnecessary=O unless=O you=O 're=O gaming=T-NEU .=O
 Plus it is small and reasonably light so I can take it with me to and from work.####Plus=O it=O is=O small=O and=O reasonably=O light=O so=O I=O can=O take=O it=O with=O me=O to=O and=O from=O work=O .=O
 I HATE this one.####I=O HATE=O this=O one=O .=O
@@ -22,7 +22,7 @@ This laptop meets every expectation and Windows 7 is great!####This=O laptop=O m
 That's how frustrating it was.####That=O 's=O how=O frustrating=O it=O was=O .=O
 I can barely use any usb devices because they will not stay connected properly.####I=O can=O barely=O use=O any=O usb=T-NEG devices=T-NEG because=O they=O will=O not=O stay=O connected=O properly=O .=O
 The one down side to it is that when I play a certin game on here, it tends to freeze up sometimes, but thats the only bad thing about this computer.####The=O one=O down=O side=O to=O it=O is=O that=O when=O I=O play=O a=O certin=O game=O on=O here=O ,=O it=O tends=O to=O freeze=O up=O sometimes=O ,=O but=O thats=O the=O only=O bad=O thing=O about=O this=O computer=O .=O
--No backlit keyboard, but not an issue for me.####-No=O backlit=O keyboard=O ,=O but=O not=O an=O issue=O for=O me=O .=O
+No backlit keyboard, but not an issue for me.####No=O backlit=O keyboard=O ,=O but=O not=O an=O issue=O for=O me=O .=O
 When I finally had everything running with all my software installed I plugged in my droid to recharge and the system crashed.####When=O I=O finally=O had=O everything=O running=O with=O all=O my=O software=T-NEU installed=O I=O plugged=O in=O my=O droid=O to=O recharge=O and=O the=O system=T-NEG crashed=O .=O
 I can't even turn it off.####I=O ca=O n't=O even=O turn=O it=O off=O .=O
 One suggestion I do have, is to not bother getting Microsoft office for the mac expecting it will work just like you knew it to on a PC.####One=O suggestion=O I=O do=O have=O ,=O is=O to=O not=O bother=O getting=O Microsoft=T-NEG office=T-NEG for=T-NEG the=T-NEG mac=T-NEG expecting=O it=O will=O work=O just=O like=O you=O knew=O it=O to=O on=O a=O PC=O .=O
@@ -58,7 +58,7 @@ There also seemed to be a problem with the hard disc as certain times windows lo
 Drivers updated ok but the BIOS update froze the system up and the computer shut down.####Drivers=T-POS updated=O ok=O but=O the=O BIOS=T-NEG update=T-NEG froze=O the=O system=T-NEG up=O and=O the=O computer=O shut=O down=O .=O
 -they lost my laptop for a month####-they=O lost=O my=O laptop=O for=O a=O month=O
 Spent 2 hours on phone with HP Technical Support.####Spent=O 2=O hours=O on=O phone=O with=O HP=T-NEU Technical=T-NEU Support=T-NEU .=O
-This is my second laptop,and it is head and shoulders above my first.####This=O is=O my=O second=O laptop=O ,=O and=O it=O is=O head=O and=O shoulders=O above=O my=O first=O .=O
+This is my second laptop, and it is head and shoulders above my first.####This=O is=O my=O second=O laptop=O ,=O and=O it=O is=O head=O and=O shoulders=O above=O my=O first=O .=O
 at first!####at=O first=O !=O
 Speaking of the browser, it too has problems.####Speaking=O of=O the=O browser=T-NEG ,=O it=O too=O has=O problems=O .=O
 I think just going from PC to Mac has gotten me totally spoiled and I can't imagine ever going back.####I=O think=O just=O going=O from=O PC=O to=O Mac=O has=O gotten=O me=O totally=O spoiled=O and=O I=O ca=O n't=O imagine=O ever=O going=O back=O .=O
@@ -80,7 +80,7 @@ If you had PC for four years I can almost gaurentee that something would of gone
 This machine delivers.####This=O machine=O delivers=O .=O
 Then 2 of my nephews were going into music and both fell in love with the MacBook Pro.####Then=O 2=O of=O my=O nephews=O were=O going=O into=O music=O and=O both=O fell=O in=O love=O with=O the=O MacBook=O Pro=O .=O
 I complain again...####I=O complain=O again=O .=O
-This laptop is insane!!!####This=O laptop=O is=O insane=O !=O !=O !=O
+This laptop is insane ! ! !####This=O laptop=O is=O insane=O !=O !=O !=O
 If a website ever freezes (which is rare), its really easy to force quit.####If=O a=O website=O ever=O freezes=O which=O is=O rare=O ,=O its=O really=O easy=O to=O force=T-POS quit=T-POS .=O
 It rarely works and when it does it's incredibly slow.####It=O rarely=O works=T-NEG and=O when=O it=O does=O it=O 's=O incredibly=O slow=O .=O
 I also enjoy the fact that my MacBook Pro laptop allows me to run Windows 7 on it by using the VMWare program.####I=O also=O enjoy=O the=O fact=O that=O my=O MacBook=O Pro=O laptop=O allows=O me=O to=O run=O Windows=T-POS 7=T-POS on=O it=O by=O using=O the=O VMWare=T-NEU program=T-NEU .=O

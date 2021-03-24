@@ -11,11 +11,17 @@ from keras.metrics import categorical_crossentropy
 from keras.metrics import categorical_accuracy
 from sklearn.preprocessing import MinMaxScaler
 import sklearn
+from data_preprocessing import *
 
 #Conditioning Flags
 conditioning=True
 
+#Other Parameters
 sentenceTest=True
+trainingSize=500
+testingSize=500
+bertFineTune=True
+largeAttention=True
 
 #Model Type parameter {'MLP','CNN','LIN'}
 modelType='CNN'
@@ -24,23 +30,48 @@ modelType='CNN'
 dataType='laptop'
 
 #Temporary Sample Training Set
-samples=['the amd turin processor is better than intel','I love intel but hate amd','it is hard to say whether amd is better than intel']
-labels=[[0,1,1,1,0,0,0,3],[0,0,1,0,0,3],[0,0,0,0,0,0,2,0,0,0,2]]
-numSamples=len(samples)
+#samples=['the amd turin processor is better than intel','I love intel but hate amd','it is hard to say whether amd is better than intel']
+#labels=[[0,1,1,1,0,0,0,3],[0,0,1,0,0,3],[0,0,0,0,0,0,2,0,0,0,2]]
+#samples=['the amd turin processor: is better than intel']
+#labels=[[0,1,1,1,0,0,0,3]]
+
 
 #Temporary Sample Testing Set
-testSamples=['nobody likes the new intel processor','I find the new amd processor to be marginally good','The intel processor beats amd hard']
-testLabels=[[0,0,0,0,3,3,],[0,0,0,0,2,2,0,0,0,0],[0,1,1,0,3,0]]
+#testSamples=['nobody likes the new intel processor','I find the new amd processor to be marginally good','The intel processor beats amd hard']
+#testLabels=[[0,0,0,0,3,3,],[0,0,0,0,2,2,0,0,0,0],[0,1,1,0,3,0]]
+
+if dataType=='laptop':
+    trainReader=Reader("data/laptop14/train.txt",trainingSize)
+    testReader=Reader("data/laptop14/test.txt",testingSize)
+    samples=trainReader.getSamples()
+    labels=trainReader.getLabels()
+    testSamples=testReader.getSamples()
+    testLabels=testReader.getLabels()
+    assert len(samples)==len(labels)
+    assert len(testSamples)==len(testLabels)
+    
+elif dataType=='rest':
+    trainReader=Reader("data/rest16/train.txt",trainingSize)
+    testReader=Reader("data/rest16/test.txt",testingSize)
+    samples=trainReader.getSamples()
+    labels=trainReader.getLabels()
+    testSamples=testReader.getSamples()
+    testLabels=testReader.getLabels()
+    assert len(samples)==len(labels)
+    assert len(testSamples)==len(testLabels)
+  
 
 #Generate BERT representations
-bert_embedder = TransformerWordEmbeddings('bert-base-multilingual-cased')
+bert_embedder = TransformerWordEmbeddings('bert-base-multilingual-cased',fine_tune=bertFineTune,allow_long_sentences=largeAttention)
 
 #Obtain Bert Embeddings
-def getBertEmbeddings(samples):
+def getBertEmbeddings(samples,labels):
+    toRemove=[]
     bertEmbeddings=[]
-    for s in samples:
-        sentence=Sentence(s)
+    for s in range(len(samples)):
+        sentence=Sentence(samples[s])
         bert_embedder.embed(sentence)
+        newLabelCount=0
         for sent in sentence:
             embeddingList=[]
             for val in sent.embedding:
@@ -68,27 +99,49 @@ def getBertEmbeddings(samples):
                 bertEmbeddings.append(embeddingMatrix) 
             else:
                 bertEmbeddings.append(embeddingList)
+            newLabelCount+=1
+        #Remove Incompatible Data
+        if newLabelCount!=len(labels[s]):
+            print('error')
+            print(samples[s])
+            print(len(labels[s]))
+            print(newLabelCount)
+            toRemove.append(s)
+            for i in range(newLabelCount):
+                bertEmbeddings.pop()
     bertEmbeddings=np.array(bertEmbeddings)
     if modelType=='CNN':
         bertEmbeddings=bertEmbeddings.reshape(list(bertEmbeddings.shape)+[1])
-    return bertEmbeddings
+    return bertEmbeddings, toRemove
 
-bertEmbeddings=getBertEmbeddings(samples)
+bertEmbeddings,remove=getBertEmbeddings(samples,labels)
+
 #print(bertEmbeddings)
 #print(bertEmbeddings.shape)
 
-bertEmbeddingsTest=getBertEmbeddings(testSamples)
+for r in sorted(remove, reverse=True):
+   del labels[r]
+
+print('Removed '+str(len(remove))+' from training set')
+
+bertEmbeddingsTest,remove=getBertEmbeddings(testSamples,testLabels)
+for r in sorted(remove, reverse=True):
+   del testLabels[r]
+print('Removed '+str(len(remove))+' from testing set')
 #print(bertEmbeddingsTest)
 #print(bertEmbeddingsTest.shape)
 
+print('length')
+print(len(bertEmbeddings))
+
 #Label Preprocessing
 trainingLabels=[]
-for i in range(numSamples):
+for i in range(len(labels)):
     trainingLabels+=labels[i]
 trainingLabels=np.array(trainingLabels)
 
 testingLabels=[]
-for i in range(len(testSamples)):
+for i in range(len(testLabels)):
     testingLabels+=testLabels[i]
 
 #Shuffle Training Samples
@@ -155,6 +208,7 @@ elif modelType=='MLP':
 elif modelType=='CNN':
     #Build CNN model
     nonLinearity='relu'
+    batchSize=15
     model = Sequential([Conv2D(filters=32,kernel_size=(3,3),activation=nonLinearity,padding='same',input_shape=(24,32,1)),
                         MaxPool2D(pool_size=(2,2),strides=2),Conv2D(filters=64,kernel_size=(3,3),activation=nonLinearity,padding='same'),
                         MaxPool2D(pool_size=(2,2),strides=2),Flatten(),Dense(4,activation='softmax')])
@@ -171,9 +225,10 @@ model.save('model_'+modelType+'_'+dataType+'.h5')
 
 #Test Model on Specific Sentence
 if sentenceTest:
-    sentence="The amd turin processor seems to perform better than intel"
+    sentence=["The amd turin processor seems to perform better than intel"]
+    label=[[0,1,1,1,0,0,0,0,0,3]]
     print(sentence)
-    singleBertEmbedding=getBertEmbeddings([sentence])
+    singleBertEmbedding,q=getBertEmbeddings(sentence,label)
     #print(singleBertEmbedding.shape)
     predictions=model.predict(x=singleBertEmbedding)
     roundedPredictions=np.argmax(predictions,axis=-1)

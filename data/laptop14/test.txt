@@ -16,7 +16,6 @@ The Apple engineers have not yet discovered the delete key.####The=O Apple=O eng
 Made interneting (part of my business) very difficult to maintain.####Made=O interneting=T-NEG part=O of=O my=O business=O very=O difficult=O to=O maintain=O .=O
 Luckily, for all of us contemplating the decision, the Mac Mini is priced just right.####Luckily=O ,=O for=O all=O of=O us=O contemplating=O the=O decision=O ,=O the=O Mac=O Mini=O is=O priced=T-POS just=O right=O .=O
 Small and still VERY powerful.####Small=O and=O still=O VERY=O powerful=O .=O
-I had gotten this model for  $1199.00 on my State's tax-free weekend and had a $100 off coupon for a MacBook at the local BestBuy!####I=O had=O gotten=O this=O model=O for=O $=O 119900=O on=O my=O State=O 's=O tax-free=O weekend=O and=O had=O a=O $=O 100=O off=O coupon=O for=O a=O MacBook=O at=O the=O local=O BestBuy=O !=O .=O
 Super light, super sexy and everything just works.####Super=O light=O ,=O super=O sexy=O and=O everything=O just=O works=T-POS .=O
 Only problem that I had was that the track pad was not very good for me, I only had a problem once or twice with it, But probably my computer was a bit defective.####Only=O problem=O that=O I=O had=O was=O that=O the=O track=T-NEG pad=T-NEG was=O not=O very=O good=O for=O me=O ,=O I=O only=O had=O a=O problem=O once=O or=O twice=O with=O it=O ,=O But=O probably=O my=O computer=O was=O a=O bit=O defective=O .=O
 And if you are switching from a pc I hilghy sugest this one.####And=O if=O you=O are=O switching=O from=O a=O pc=O I=O hilghy=O sugest=O this=O one=O .=O
@@ -74,7 +73,7 @@ MS Office 2011 for Mac is wonderful, well worth it.####MS=T-POS Office=T-POS 201
 After using it for over a month, an issue started to surface.####After=O using=O it=O for=O over=O a=O month=O ,=O an=O issue=O started=O to=O surface=O .=O
 But the performance of Mac Mini is a huge disappointment.####But=O the=O performance=T-NEG of=O Mac=O Mini=O is=O a=O huge=O disappointment=O .=O
 There has been no problem with anything.####There=O has=O been=O no=O problem=O with=O anything=O .=O
-I believe with Apple - you get what you pay for.####I=O believe=O with=O Apple=O ,=O you=O get=O what=O you=O pay=O for=O .=O
+I believe with Apple - you get what you pay for.####I=O believe=O with=O Apple=O you=O get=O what=O you=O pay=O for=O .=O
 They don't just look good; they deliver excellent performance.####They=O do=O n't=O just=O look=T-POS good=O ;=O they=O deliver=O excellent=O performance=T-POS .=O
 I have had it over a year now with out a Glitch of any kind..I love the lit up keys and screen display...this thing is Fast and clear as can be.####I=O have=O had=O it=O over=O a=O year=O now=O with=O out=O a=O Glitch=O of=O any=O kindI=O love=O the=O lit=T-POS up=T-POS keys=T-POS and=O screen=T-POS display=T-POS thing=O is=O Fast=O and=O clear=O as=O can=O be=O .=O
 The product is prefect for everyone.####The=O product=O is=O prefect=O for=O everyone=O .=O
@@ -86,7 +85,7 @@ I would suggest this product to anyone.####I=O would=O suggest=O this=O product=
 With no problems,  I'm happy with this purchase because I saved money compared to buying it anywhere else.####With=O no=O problems=O ,=O I=O 'm=O happy=O with=O this=O purchase=O because=O I=O saved=O money=O compared=O to=O buying=O it=O anywhere=O else=O .=O
 Incredible graphics and brilliant colors.####Incredible=O graphics=T-POS and=O brilliant=O colors=T-POS .=O
 I needed something affordable from Apple and was tired of dealing with PC laptop after PC laptop.####I=O needed=O something=O affordable=O from=O Apple=O and=O was=O tired=O of=O dealing=O with=O PC=O laptop=O after=O PC=O laptop=O .=O
-Just bit the bullet and bought the Mac hoping it will last a lot longer….####Just=O bit=O the=O bullet=O and=O bought=O the=O Mac=O hoping=O it=O will=O last=O a=O lot=O longer=O .=O
+Just bit the bullet and bought the Mac hoping it will last a lot longer.####Just=O bit=O the=O bullet=O and=O bought=O the=O Mac=O hoping=O it=O will=O last=O a=O lot=O longer=O .=O
 Built-in apps are purely amazing.####Built-in=T-POS apps=T-POS are=O purely=O amazing=O .=O
 Cons: Screen resolution.####Cons=O ,=O Screen=T-NEG resolution=T-NEG .=O
 From the speed to the multi touch gestures this operating system beats Windows easily.####From=O the=O speed=T-POS to=O the=O multi=T-POS touch=T-POS gestures=T-POS this=O operating=T-POS system=T-POS beats=O Windows=T-NEG easily=O .=O
@@ -96,7 +95,7 @@ I opted for the SquareTrade 3-Year Computer Accidental Protection Warranty ($150
 It's light and easy to transport.####It=O 's=O light=O and=O easy=O to=O transport=T-POS .=O
 Once you get past learning how to use the poorly designed Windows 8 Set-Up you may feel frustrated.####Once=O you=O get=O past=O learning=O how=O to=O use=O the=O poorly=O designed=O Windows=T-NEG 8=T-NEG Set-Up=T-NEG you=O may=O feel=O frustrated=O .=O
 Very powerful especially for the money.####Very=O powerful=O especially=O for=O the=O money=O .=O
-When my Dell laptop gave up only after 2 1/2 years, I decided to buy MacBook Pro.####When=O my=O Dell=O laptop=O gave=O up=O only=O after=O 2=O 1/2=O years=O ,=O I=O decided=O to=O buy=O MacBook=O Pro=O .=O
+When my Dell laptop gave up only after 2.5 years, I decided to buy MacBook Pro.####When=O my=O Dell=O laptop=O gave=O up=O only=O after=O 2.5=O years=O ,=O I=O decided=O to=O buy=O MacBook=O Pro=O .=O
 It's been time for a new laptop, and the only debate was which size of the Mac laptops, and whether to spring for the retina display.####It=O 's=O been=O time=O for=O a=O new=O laptop=O ,=O and=O the=O only=O debate=O was=O which=O size=T-NEU of=O the=O Mac=O laptops=O ,=O and=O whether=O to=O spring=O for=O the=O retina=T-NEU display=T-NEU .=O
 This was a significantly more affordable than getting a new MacBook Pro from Apple.####This=O was=O a=O significan'tly=O more=O affordable=O than=O getting=O a=O new=O MacBook=O Pro=O from=O Apple=O .=O
 I have always wanted a MacBook Pro.....always!####I=O have=O always=O wanted=O a=O MacBook=O Proalways=O !=O .=O
