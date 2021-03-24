@@ -13,6 +13,7 @@ from sklearn.preprocessing import MinMaxScaler
 import sklearn
 from tensorflow.python.keras.layers.kernelized import RandomFourierFeatures
 from data_preprocessing import *
+from datetime import datetime
 
 #Conditioning Flags
 conditioning=True
@@ -23,19 +24,19 @@ trainingSize=1000
 testingSize=500
 bertFineTune=True
 largeAttention=True
+now = str(datetime.now())
 
 #Model Type parameter {'MLP','CNN','LIN'}
-modelType='MLP'
+modelType='LIN'
 
 #Dataset Type Parameter {'rest','laptop'}
-dataType='laptop'
+dataType='rest'
 
 #Temporary Sample Training Set
 #samples=['the amd turin processor is better than intel','I love intel but hate amd','it is hard to say whether amd is better than intel']
 #labels=[[0,1,1,1,0,0,0,3],[0,0,1,0,0,3],[0,0,0,0,0,0,2,0,0,0,2]]
 #samples=['the amd turin processor: is better than intel']
 #labels=[[0,1,1,1,0,0,0,3]]
-
 
 #Temporary Sample Testing Set
 #testSamples=['nobody likes the new intel processor','I find the new amd processor to be marginally good','The intel processor beats amd hard']
@@ -120,10 +121,15 @@ bertEmbeddings,remove=getBertEmbeddings(samples,labels)
 #print(bertEmbeddings)
 #print(bertEmbeddings.shape)
 
+#Prepare results file
+file=open('model_evaluations/evaluation_model_'+modelType+'_'+dataType+'_'+now+'.txt','a')
+
 for r in sorted(remove, reverse=True):
    del labels[r]
 
 print('Removed '+str(len(remove))+' from training set')
+file.write('Training on '+str(trainingSize-len(remove))+' samples')
+file.write('\n')
 
 bertEmbeddingsTest,remove=getBertEmbeddings(testSamples,testLabels)
 for r in sorted(remove, reverse=True):
@@ -132,8 +138,11 @@ print('Removed '+str(len(remove))+' from testing set')
 #print(bertEmbeddingsTest)
 #print(bertEmbeddingsTest.shape)
 
-print('length')
-print(len(bertEmbeddings))
+file.write('Testing on '+str(testingSize-len(remove))+' samples')
+file.write('\n')
+
+#print('length')
+#print(len(bertEmbeddings))
 
 #Label Preprocessing
 trainingLabels=[]
@@ -155,6 +164,7 @@ bertEmbeddings,trainingLabels=sklearn.utils.shuffle(bertEmbeddings,trainingLabel
 
 #Model Creation and Training
 def evaluator(roundedPredictions):
+    
     #Produce Accuracy (Polarity Identification) and F1 score (aspect identification)
     correct=0
     TP,FP,FN,TN=0,0,0,0
@@ -169,38 +179,51 @@ def evaluator(roundedPredictions):
             FN+=1
         elif roundedPredictions[i]==0 and testingLabels[i] ==0:
             TN+=1    
+    if TP==0:
+        TP=0.000001
+    if FP==0:
+        FP=0.000001
     print('Testing Flat Accuracy: '+str(correct/len(roundedPredictions)))
-    print('Testing Precision: '+str(TP/(TP+FP)))
-    print('Testing Recall: '+str(TP/(TP+FN)))
-    print('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
+    file.write('Testing Flat Accuracy: '+str(correct/len(roundedPredictions)))
+    file.write('\n')
     print('Testing Balanced Accuracy: '+str((TP+TN)/(TP+FP+TN+FN)))
-
+    file.write('Testing Balanced Accuracy: '+str((TP+TN)/(TP+FP+TN+FN)))
+    file.write('\n')
+    print('Testing Precision: '+str(TP/(TP+FP)))
+    file.write('Testing Precision: '+str(TP/(TP+FP)))
+    file.write('\n')
+    print('Testing Recall: '+str(TP/(TP+FN)))
+    file.write('Testing Recall: '+str(TP/(TP+FN)))
+    file.write('\n')
+    print('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
+    file.write('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
+    file.write('\n')
+    
 if modelType=='LIN':
     #Build Linear Model
     model = Sequential()
     #The following hyperparameters will be determined experimentally
     batchSize=20
-    #model.add(Dense(4, input_shape=(768,), activation='softmax'))
-    #model.summary()
-    #model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
-    #              metrics=['accuracy'])
+    model.add(Dense(4, input_shape=(768,), activation='softmax'))
+    model.summary()
+    model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
+                  metrics=['accuracy'])
     
-    model = keras.Sequential(
-    [
-        keras.Input(shape=(768,)),
-        RandomFourierFeatures(
-            output_dim=4096, scale=10.0, kernel_initializer="gaussian"
-        ),
-        layers.Dense(units=4),
-    ]
-    )
-    model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=1e-3),
-        loss=keras.losses.hinge,
-        metrics=[keras.metrics.CategoricalAccuracy(name="acc")],
-    )
-        
-    
+    #Use Random Fourier Features to Approximate SVM 
+    #model = keras.Sequential(
+    #[
+    #    keras.Input(shape=(768,)),
+    #    RandomFourierFeatures(
+    #        output_dim=4096, scale=10.0, kernel_initializer="gaussian"
+    #    ),
+    #    layers.Dense(units=4),
+    #]
+    #)
+    #model.compile(
+    #    optimizer=keras.optimizers.Adam(learning_rate=1e-3),
+    #    loss=keras.losses.hinge,
+    #    metrics=[keras.metrics.CategoricalAccuracy(name="acc")],
+    #)
     model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,verbose=2)
     #Test Model
     predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
@@ -211,7 +234,7 @@ elif modelType=='MLP':
     #Build MLP Model
     model = Sequential()
     #The following hyperparameters will be determined experimentally
-    nonLinearity='sigmoid'
+    nonLinearity='relu'
     batchSize=20
     model.add(Dense(400, input_shape=(768,), activation=nonLinearity))
     model.add(Dense(24, activation=nonLinearity))
@@ -242,7 +265,8 @@ elif modelType=='CNN':
     evaluator(roundedPredictions)
     
 #Save Model
-model.save('model_'+modelType+'_'+dataType+'.h5')
+model.save('models/model_'+modelType+'_'+dataType+'_'+now+'.h5')
+file.close()
 
 #Test Model on Specific Sentence
 if sentenceTest:
@@ -255,3 +279,5 @@ if sentenceTest:
     roundedPredictions=np.argmax(predictions,axis=-1)
     print('Predicted Label:')
     print(roundedPredictions)
+    
+    

@@ -1,0 +1,7 @@
+Training on 958 samples
+Testing on 474 samples
+Testing Flat Accuracy: 0.9418351477449456
+Testing Balanced Accuracy: 0.962208398133748
+Testing Precision: 0.892128279883382
+Testing Recall: 0.59765625
+Testing F1 Score: 0.7157894736842105
