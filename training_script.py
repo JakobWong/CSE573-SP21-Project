@@ -11,6 +11,7 @@ from keras.metrics import categorical_crossentropy
 from keras.metrics import categorical_accuracy
 from sklearn.preprocessing import MinMaxScaler
 import sklearn
+from tensorflow.python.keras.layers.kernelized import RandomFourierFeatures
 from data_preprocessing import *
 
 #Conditioning Flags
@@ -18,13 +19,13 @@ conditioning=True
 
 #Other Parameters
 sentenceTest=True
-trainingSize=500
+trainingSize=1000
 testingSize=500
 bertFineTune=True
 largeAttention=True
 
 #Model Type parameter {'MLP','CNN','LIN'}
-modelType='CNN'
+modelType='MLP'
 
 #Dataset Type Parameter {'rest','laptop'}
 dataType='laptop'
@@ -168,18 +169,38 @@ def evaluator(roundedPredictions):
             FN+=1
         elif roundedPredictions[i]==0 and testingLabels[i] ==0:
             TN+=1    
-    print('Testing Accuracy: '+str(correct/len(roundedPredictions)))
+    print('Testing Flat Accuracy: '+str(correct/len(roundedPredictions)))
+    print('Testing Precision: '+str(TP/(TP+FP)))
+    print('Testing Recall: '+str(TP/(TP+FN)))
     print('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
+    print('Testing Balanced Accuracy: '+str((TP+TN)/(TP+FP+TN+FN)))
 
 if modelType=='LIN':
     #Build Linear Model
     model = Sequential()
     #The following hyperparameters will be determined experimentally
-    batchSize=15
-    model.add(Dense(4, input_shape=(768,), activation='softmax'))
-    model.summary()
-    model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
-                  metrics=['accuracy'])
+    batchSize=20
+    #model.add(Dense(4, input_shape=(768,), activation='softmax'))
+    #model.summary()
+    #model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
+    #              metrics=['accuracy'])
+    
+    model = keras.Sequential(
+    [
+        keras.Input(shape=(768,)),
+        RandomFourierFeatures(
+            output_dim=4096, scale=10.0, kernel_initializer="gaussian"
+        ),
+        layers.Dense(units=4),
+    ]
+    )
+    model.compile(
+        optimizer=keras.optimizers.Adam(learning_rate=1e-3),
+        loss=keras.losses.hinge,
+        metrics=[keras.metrics.CategoricalAccuracy(name="acc")],
+    )
+        
+    
     model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,verbose=2)
     #Test Model
     predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
@@ -190,10 +211,10 @@ elif modelType=='MLP':
     #Build MLP Model
     model = Sequential()
     #The following hyperparameters will be determined experimentally
-    nonLinearity='relu'
-    batchSize=15
-    model.add(Dense(16, input_shape=(768,), activation=nonLinearity))
-    model.add(Dense(12, activation=nonLinearity))
+    nonLinearity='sigmoid'
+    batchSize=20
+    model.add(Dense(400, input_shape=(768,), activation=nonLinearity))
+    model.add(Dense(24, activation=nonLinearity))
     #4 classes on output, softmax for probability distribution over classes
     model.add(Dense(4, activation='softmax'))
     model.summary()
@@ -208,7 +229,7 @@ elif modelType=='MLP':
 elif modelType=='CNN':
     #Build CNN model
     nonLinearity='relu'
-    batchSize=15
+    batchSize=20
     model = Sequential([Conv2D(filters=32,kernel_size=(3,3),activation=nonLinearity,padding='same',input_shape=(24,32,1)),
                         MaxPool2D(pool_size=(2,2),strides=2),Conv2D(filters=64,kernel_size=(3,3),activation=nonLinearity,padding='same'),
                         MaxPool2D(pool_size=(2,2),strides=2),Flatten(),Dense(4,activation='softmax')])
