@@ -167,10 +167,16 @@ def evaluator(roundedPredictions):
     
     #Produce Accuracy (Polarity Identification) and F1 score (aspect identification)
     correct=0
+    correctAspect=0
+    totalAspects=0
     TP,FP,FN,TN=0,0,0,0
     for i in range(len(roundedPredictions)):
+        if testingLabels[i] in [1,2,3]:
+            totalAspects+=1
         if roundedPredictions[i]==testingLabels[i]:
             correct+=1
+            if testingLabels[i]  in [1,2,3]:
+                correctAspect+=1
         if roundedPredictions[i] in [1,2,3] and testingLabels[i] in [1,2,3]:
             TP+=1
         elif roundedPredictions[i] in [1,2,3] and testingLabels[i]==0:
@@ -189,6 +195,9 @@ def evaluator(roundedPredictions):
     print('Testing Balanced Accuracy: '+str((TP+TN)/(TP+FP+TN+FN)))
     file.write('Testing Balanced Accuracy: '+str((TP+TN)/(TP+FP+TN+FN)))
     file.write('\n')
+    print('Aspect polarity accuracy: '+str(correctAspect/totalAspects))
+    file.write('Aspect polarity accuracy: '+str(correctAspect/totalAspects))
+    file.write('\n')
     print('Testing Precision: '+str(TP/(TP+FP)))
     file.write('Testing Precision: '+str(TP/(TP+FP)))
     file.write('\n')
@@ -201,13 +210,32 @@ def evaluator(roundedPredictions):
     
 if modelType=='LIN':
     #Build Linear Model
+    #model = Sequential()
+    #The following hyperparameters will be determined experimentally
+    #batchSize=20
+    #model.add(Dense(4, input_shape=(768,), activation='softmax'))
+    #model.summary()
+    #model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
+    #              metrics=['accuracy'])
+    
+    
+    #Build MLP Model
     model = Sequential()
     #The following hyperparameters will be determined experimentally
+    nonLinearity='linear'
     batchSize=20
-    model.add(Dense(4, input_shape=(768,), activation='softmax'))
+    #400
+    model.add(Dense(400, input_shape=(768,), activation=nonLinearity))
+    #24
+    model.add(Dense(24, activation=nonLinearity))
+
+    #4 classes on output, softmax for probability distribution over classes
+    model.add(Dense(4, activation='softmax'))
     model.summary()
     model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
                   metrics=['accuracy'])
+    
+    
     
     #Use Random Fourier Features to Approximate SVM 
     #model = keras.Sequential(
@@ -234,10 +262,13 @@ elif modelType=='MLP':
     #Build MLP Model
     model = Sequential()
     #The following hyperparameters will be determined experimentally
-    nonLinearity='relu'
+    nonLinearity='tanh'
     batchSize=20
+    #400
     model.add(Dense(400, input_shape=(768,), activation=nonLinearity))
+    #24
     model.add(Dense(24, activation=nonLinearity))
+
     #4 classes on output, softmax for probability distribution over classes
     model.add(Dense(4, activation='softmax'))
     model.summary()
