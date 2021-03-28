@@ -20,6 +20,7 @@ conditioning=True
 
 #Other Parameters
 sentenceTest=True
+#2000 laptop, 1000 rest
 trainingSize=1000
 testingSize=500
 bertFineTune=True
@@ -27,10 +28,10 @@ largeAttention=True
 now = str(datetime.now())
 
 #Model Type parameter {'MLP','CNN','LIN'}
-modelType='LIN'
+modelType='MLP'
 
 #Dataset Type Parameter {'rest','laptop'}
-dataType='rest'
+dataType='laptop'
 
 #Temporary Sample Training Set
 #samples=['the amd turin processor is better than intel','I love intel but hate amd','it is hard to say whether amd is better than intel']
@@ -62,6 +63,7 @@ elif dataType=='rest':
     assert len(samples)==len(labels)
     assert len(testSamples)==len(testLabels)
   
+
 
 #Generate BERT representations
 bert_embedder = TransformerWordEmbeddings('bert-base-multilingual-cased',fine_tune=bertFineTune,allow_long_sentences=largeAttention)
@@ -118,6 +120,12 @@ def getBertEmbeddings(samples,labels):
 
 bertEmbeddings,remove=getBertEmbeddings(samples,labels)
 
+#Record Bert Embeddings
+file2=open('bert_embeddings/BERT_embeddings_train_'+str(dataType)+'.txt','w')
+for b in bertEmbeddings:
+    file2.write(str(b))
+    file2.write('\n')
+file2.close()
 #print(bertEmbeddings)
 #print(bertEmbeddings.shape)
 
@@ -137,6 +145,12 @@ for r in sorted(remove, reverse=True):
 print('Removed '+str(len(remove))+' from testing set')
 #print(bertEmbeddingsTest)
 #print(bertEmbeddingsTest.shape)
+
+file3=open('bert_embeddings/BERT_embeddings_test_'+str(dataType)+'.txt','w')
+for b in bertEmbeddingsTest:
+    file3.write(str(b))
+    file3.write('\n')
+file3.close() 
 
 file.write('Testing on '+str(testingSize-len(remove))+' samples')
 file.write('\n')
@@ -207,7 +221,8 @@ def evaluator(roundedPredictions):
     print('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
     file.write('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
     file.write('\n')
-    
+
+  
 if modelType=='LIN':
     #Build Linear Model
     #model = Sequential()
