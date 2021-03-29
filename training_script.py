@@ -14,6 +14,7 @@ import sklearn
 from tensorflow.python.keras.layers.kernelized import RandomFourierFeatures
 from data_preprocessing import *
 from datetime import datetime
+import scipy.io as sio
 
 #Conditioning Flags
 conditioning=True
@@ -28,10 +29,10 @@ largeAttention=True
 now = str(datetime.now())
 
 #Model Type parameter {'MLP','CNN','LIN'}
-modelType='MLP'
+modelType='LIN'
 
 #Dataset Type Parameter {'rest','laptop'}
-dataType='laptop'
+dataType='rest'
 
 #Temporary Sample Training Set
 #samples=['the amd turin processor is better than intel','I love intel but hate amd','it is hard to say whether amd is better than intel']
@@ -121,11 +122,24 @@ def getBertEmbeddings(samples,labels):
 bertEmbeddings,remove=getBertEmbeddings(samples,labels)
 
 #Record Bert Embeddings
-file2=open('bert_embeddings/BERT_embeddings_train_'+str(dataType)+'.txt','w')
-for b in bertEmbeddings:
-    file2.write(str(b))
-    file2.write('\n')
-file2.close()
+#file2=open('bert_embeddings/BERT_embeddings_train_'+str(dataType)+'.txt','w')
+#for b in bertEmbeddings:
+#    file2.write(str(b))
+ #   file2.write('\n')
+#file2.close()
+ 
+bertTrainDict={}
+if dataType=='laptop':
+    filename1='BERT_embeddings_train_laptop.mat'
+    filename2='BERT_embeddings_test_laptop.mat'
+else:
+    filename1='BERT_embeddings_train_rest.mat'
+    filename2='BERT_embeddings_test_rest.mat'
+    
+for i in range(len(bertEmbeddings)):
+    bertTrainDict[str(i)]=bertEmbeddings[i].copy()
+sio.savemat(filename1,bertTrainDict)
+
 #print(bertEmbeddings)
 #print(bertEmbeddings.shape)
 
@@ -146,11 +160,17 @@ print('Removed '+str(len(remove))+' from testing set')
 #print(bertEmbeddingsTest)
 #print(bertEmbeddingsTest.shape)
 
-file3=open('bert_embeddings/BERT_embeddings_test_'+str(dataType)+'.txt','w')
-for b in bertEmbeddingsTest:
-    file3.write(str(b))
-    file3.write('\n')
-file3.close() 
+#file3=open('bert_embeddings/BERT_embeddings_test_'+str(dataType)+'.txt','w')
+#for b in bertEmbeddingsTest:
+#    file3.write(str(b))
+#    file3.write('\n')
+#file3.close() 
+#file2.close()
+
+bertTestDict={}
+for i in range(len(bertEmbeddingsTest)):
+    bertTestDict[str(i)]=bertEmbeddingsTest[i].copy()
+sio.savemat(filename2,bertTestDict)
 
 file.write('Testing on '+str(testingSize-len(remove))+' samples')
 file.write('\n')
