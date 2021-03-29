@@ -69,8 +69,10 @@ elif dataType=='rest':
 #Generate BERT representations
 bert_embedder = TransformerWordEmbeddings('bert-base-multilingual-cased',fine_tune=bertFineTune,allow_long_sentences=largeAttention)
 
+
 #Obtain Bert Embeddings
 def getBertEmbeddings(samples,labels):
+    wordList=[]
     toRemove=[]
     bertEmbeddings=[]
     for s in range(len(samples)):
@@ -105,6 +107,10 @@ def getBertEmbeddings(samples,labels):
             else:
                 bertEmbeddings.append(embeddingList)
             newLabelCount+=1
+            string=str(sent).replace('token ','')
+            string=string[string.find(' ')+1:]
+            string=string[string.find(' ')+1:]
+            wordList.append(string)
         #Remove Incompatible Data
         if newLabelCount!=len(labels[s]):
             print('error')
@@ -114,12 +120,13 @@ def getBertEmbeddings(samples,labels):
             toRemove.append(s)
             for i in range(newLabelCount):
                 bertEmbeddings.pop()
+                wordList.pop()
     bertEmbeddings=np.array(bertEmbeddings)
     if modelType=='CNN':
         bertEmbeddings=bertEmbeddings.reshape(list(bertEmbeddings.shape)+[1])
-    return bertEmbeddings, toRemove
+    return bertEmbeddings, toRemove,wordList
 
-bertEmbeddings,remove=getBertEmbeddings(samples,labels)
+bertEmbeddings,remove,trainingWords=getBertEmbeddings(samples,labels)
 
 #Record Bert Embeddings
 #file2=open('bert_embeddings/BERT_embeddings_train_'+str(dataType)+'.txt','w')
@@ -153,7 +160,7 @@ print('Removed '+str(len(remove))+' from training set')
 file.write('Training on '+str(trainingSize-len(remove))+' samples')
 file.write('\n')
 
-bertEmbeddingsTest,remove=getBertEmbeddings(testSamples,testLabels)
+bertEmbeddingsTest,remove,testingWords=getBertEmbeddings(testSamples,testLabels)
 for r in sorted(remove, reverse=True):
    del testLabels[r]
 print('Removed '+str(len(remove))+' from testing set')
@@ -166,6 +173,11 @@ print('Removed '+str(len(remove))+' from testing set')
 #    file3.write('\n')
 #file3.close() 
 #file2.close()
+
+
+
+
+
 
 bertTestDict={}
 for i in range(len(bertEmbeddingsTest)):
@@ -187,6 +199,32 @@ trainingLabels=np.array(trainingLabels)
 testingLabels=[]
 for i in range(len(testLabels)):
     testingLabels+=testLabels[i]
+
+
+print(len(bertEmbeddings))
+print(len(labels))
+print(len(trainingWords))
+print()
+print(len(bertEmbeddingsTest))
+print(len(testLabels))
+print(len(testingWords))
+
+
+file2=open('word_list_train_'+str(dataType)+'.txt','w')
+for w in range(len(trainingWords)):
+    file2.write(str(trainingWords[w]))
+    file2.write(' ')
+    file2.write(str(trainingLabels[w]))
+    file2.write('\n')
+file2.close()
+
+file3=open('word_list_test_'+str(dataType)+'.txt','w')
+for w in range(len(testingWords)):
+    file3.write(str(testingWords[w]))
+    file3.write(' ')
+    file3.write(str(testingLabels[w]))
+    file3.write('\n')
+file3.close()
 
 #Shuffle Training Samples
 bertEmbeddings,trainingLabels=sklearn.utils.shuffle(bertEmbeddings,trainingLabels)
@@ -339,7 +377,7 @@ if sentenceTest:
     sentence=["The amd turin processor seems to perform better than intel"]
     label=[[0,1,1,1,0,0,0,0,0,3]]
     print(sentence)
-    singleBertEmbedding,q=getBertEmbeddings(sentence,label)
+    singleBertEmbedding,q,w=getBertEmbeddings(sentence,label)
     #print(singleBertEmbedding.shape)
     predictions=model.predict(x=singleBertEmbedding)
     roundedPredictions=np.argmax(predictions,axis=-1)
