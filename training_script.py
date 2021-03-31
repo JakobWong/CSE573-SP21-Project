@@ -107,9 +107,10 @@ def getBertEmbeddings(samples,labels):
             else:
                 bertEmbeddings.append(embeddingList)
             newLabelCount+=1
-            string=str(sent).replace('token ','')
-            string=string[string.find(' ')+1:]
-            string=string[string.find(' ')+1:]
+            string=str(sent)
+            #string=string.replace('token ','')
+            #string=string[string.find(' ')+1:]
+            #string=string[string.find(' ')+1:]
             wordList.append(string)
         #Remove Incompatible Data
         if newLabelCount!=len(labels[s]):
@@ -210,7 +211,7 @@ print(len(testLabels))
 print(len(testingWords))
 
 
-file2=open('word_list_train_'+str(dataType)+'.txt','w')
+file2=open('contex_word_list_train_'+str(dataType)+'.txt','w')
 for w in range(len(trainingWords)):
     file2.write(str(trainingWords[w]))
     file2.write(' ')
@@ -218,7 +219,7 @@ for w in range(len(trainingWords)):
     file2.write('\n')
 file2.close()
 
-file3=open('word_list_test_'+str(dataType)+'.txt','w')
+file3=open('context_word_list_test_'+str(dataType)+'.txt','w')
 for w in range(len(testingWords)):
     file3.write(str(testingWords[w]))
     file3.write(' ')
