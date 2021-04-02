@@ -22,17 +22,18 @@ conditioning=True
 #Other Parameters
 sentenceTest=True
 #2000 laptop, 1000 rest
-trainingSize=1000
+trainingSize=2000
 testingSize=500
 bertFineTune=True
 largeAttention=True
 now = str(datetime.now())
+train=False
 
 #Model Type parameter {'MLP','CNN','LIN'}
 modelType='LIN'
 
 #Dataset Type Parameter {'rest','laptop'}
-dataType='rest'
+dataType='laptop'
 
 #Temporary Sample Training Set
 #samples=['the amd turin processor is better than intel','I love intel but hate amd','it is hard to say whether amd is better than intel']
@@ -108,9 +109,9 @@ def getBertEmbeddings(samples,labels):
                 bertEmbeddings.append(embeddingList)
             newLabelCount+=1
             string=str(sent)
-            #string=string.replace('token ','')
-            #string=string[string.find(' ')+1:]
-            #string=string[string.find(' ')+1:]
+            string=string.replace('token ','')
+            string=string[string.find(' ')+1:]
+            string=string[string.find(' ')+1:]
             wordList.append(string)
         #Remove Incompatible Data
         if newLabelCount!=len(labels[s]):
@@ -211,7 +212,7 @@ print(len(testLabels))
 print(len(testingWords))
 
 
-file2=open('contex_word_list_train_'+str(dataType)+'.txt','w')
+file2=open('delcontex_word_list_train_'+str(dataType)+'.txt','w')
 for w in range(len(trainingWords)):
     file2.write(str(trainingWords[w]))
     file2.write(' ')
@@ -219,7 +220,7 @@ for w in range(len(trainingWords)):
     file2.write('\n')
 file2.close()
 
-file3=open('context_word_list_test_'+str(dataType)+'.txt','w')
+file3=open('delcontext_word_list_test_'+str(dataType)+'.txt','w')
 for w in range(len(testingWords)):
     file3.write(str(testingWords[w]))
     file3.write(' ')
@@ -229,6 +230,8 @@ file3.close()
 
 #Shuffle Training Samples
 bertEmbeddings,trainingLabels=sklearn.utils.shuffle(bertEmbeddings,trainingLabels)
+
+file4=open('predictions/predictions_'+str(modelType)+'_'+str(dataType)+'.txt','w')
 
 #Configure GPU
 #physical_devices=tf.config.experimental.list_physical_devices('GPU')
@@ -257,7 +260,9 @@ def evaluator(roundedPredictions):
         elif roundedPredictions[i]==0 and testingLabels[i] in [1,2,3]:
             FN+=1
         elif roundedPredictions[i]==0 and testingLabels[i] ==0:
-            TN+=1    
+            TN+=1
+        file4.write(str(testingWords[i])+' '+str(roundedPredictions[i]))
+        file4.write('\n')
     if TP==0:
         TP=0.000001
     if FP==0:
@@ -282,7 +287,7 @@ def evaluator(roundedPredictions):
     file.write('\n')
 
   
-if modelType=='LIN':
+if modelType=='LIN' and train:
     #Build Linear Model
     #model = Sequential()
     #The following hyperparameters will be determined experimentally
@@ -332,7 +337,7 @@ if modelType=='LIN':
     roundedPredictions=np.argmax(predictions,axis=-1)
     evaluator(roundedPredictions)
     
-elif modelType=='MLP':
+elif modelType=='MLP' and train:
     #Build MLP Model
     model = Sequential()
     #The following hyperparameters will be determined experimentally
@@ -354,7 +359,7 @@ elif modelType=='MLP':
     roundedPredictions=np.argmax(predictions,axis=-1)
     evaluator(roundedPredictions)
            
-elif modelType=='CNN':
+elif modelType=='CNN' and train:
     #Build CNN model
     nonLinearity='relu'
     batchSize=20
@@ -370,7 +375,16 @@ elif modelType=='CNN':
     evaluator(roundedPredictions)
     
 #Save Model
-model.save('models/model_'+modelType+'_'+dataType+'_'+now+'.h5')
+if train:
+    model.save('models/model_'+modelType+'_'+dataType+'_'+now+'.h5')
+else:
+    batchSize=20
+    model=keras.models.load_model('models/model_LIN_laptop_2021-03-26-20-44-30.955765.h5')
+    predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
+    roundedPredictions=np.argmax(predictions,axis=-1)
+    evaluator(roundedPredictions)  
+    file4.close()
+    
 file.close()
 
 #Test Model on Specific Sentence
