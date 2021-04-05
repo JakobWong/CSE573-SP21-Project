@@ -17,10 +17,13 @@ function renderNeuronActivations(data, datasetSelected, modelSelected, isRenderC
                 color = d3.scaleSequential(d3["interpolateOranges"]);
                 break;
             case 2:
-                color = d3.scaleSequential(d3["interpolateGreens"]);
+                color = d3.scaleSequential(d3["interpolatePurples"]);
                 break;
             case 3:
-                color = d3.scaleSequential(d3["interpolateReds"]);
+                color = d3.scaleLinear()
+                          .domain([0,1])
+                          .range(["#FFCEE6","#990c58"])
+                          .interpolate(d3.interpolateHcl);
                 break;
         }
     }
@@ -28,49 +31,67 @@ function renderNeuronActivations(data, datasetSelected, modelSelected, isRenderC
 
     const path = 'preds_' + datasetSelected + '/' + modelSelected + '/' + cellI.toString() + '_' + cellJ.toString() + '.json';
     
+    d3.select("#nn_tooltip").remove();
+
+    var div = d3.select("#nn")
+                .append("div")	
+                .attr("class", "tooltip")			
+                .attr("id","nn_tooltip")	
+                .style("opacity", 0);
+
     if (modelSelected == 'lin'){
         d3.json(path,(preds)=>{
             const pred = preds.filter(d=>d.id==pointId)[0];
 
             // console.log(keys);
             const input = pred.input;
-            const dense48 = pred.dense_48;
-            const dense49 = pred.dense_49;
-            const dense50 = pred.dense_50;
-            const dense48StartId = input.length;
-            const dense49StartId = dense48StartId + dense48.length;
-            const dense50StartId = dense49StartId + dense49.length;
+            const dense1 = (datasetSelected == 'test_laptop')? pred.dense_48:pred.dense_51;
+            const dense2 = (datasetSelected == 'test_laptop')? pred.dense_49:pred.dense_52;
+            const dense3 = (datasetSelected == 'test_laptop')? pred.dense_50:pred.dense_53;
+            const dense1StartId = input.length;
+            const dense2StartId = dense1StartId + dense1.length;
+            const dense3StartId = dense2StartId + dense2.length;
 
 
+            d3.selectAll(".neuron")
+              .on("mouseover",d=>{
+                div.transition().duration(200).style('opacity', 1)
+                .style('left', (d3.event.pageX-600) + 'px')
+                .style('top', (d3.event.pageY) + 'px');
+
+                div.html(`<h6>${d.value}</h6>`)
+
+              })
+            
             // a_i means activation_i
             input.forEach((a_i,i)=>{
                 d3.select("#lin_input_"+i.toString())
-                  .style("fill",color(a_i));
-                dense48.forEach((a_j,j)=>{
-                    d3.select("#nn_link_"+i.toString()+'_'+ (dense48StartId+j).toString())
+                  .style("fill",d=>{ d.value = a_i; return color(a_i)});
+                  dense1.forEach((a_j,j)=>{
+                    d3.select("#nn_link_"+i.toString()+'_'+ (dense1StartId+j).toString())
                       .style("stroke",color(a_i/2+a_j/2));
                 })
             })
 
-            dense48.forEach((a_i,i)=>{
-                d3.select("#lin_dense48_"+i.toString())
-                  .style("fill",color(a_i));
-                dense49.forEach((a_j,j)=>{
-                    d3.select("#nn_link_"+(dense48StartId+i).toString()+'_'+ (dense49StartId+j).toString())
+            dense1.forEach((a_i,i)=>{
+                d3.select("#lin_dense1_"+i.toString())
+                    .style("fill",d=>{ d.value = a_i; return color(a_i)});
+                dense2.forEach((a_j,j)=>{
+                    d3.select("#nn_link_"+(dense1StartId+i).toString()+'_'+ (dense2StartId+j).toString())
                       .style("stroke",color(a_i/2+a_j/2))
                 })
             })
-            dense49.forEach((a_i,i)=>{
-                d3.select("#lin_dense49_"+i.toString())
-                  .style("fill",color(a_i));
-                dense50.forEach((a_j,j)=>{
-                    d3.select("#nn_link_"+(dense49StartId+i).toString()+'_'+(dense50StartId+j).toString())
+            dense2.forEach((a_i,i)=>{
+                d3.select("#lin_dense2_"+i.toString())
+                .style("fill",d=>{ d.value = a_i; return color(a_i)});
+                dense3.forEach((a_j,j)=>{
+                    d3.select("#nn_link_"+(dense2StartId+i).toString()+'_'+(dense3StartId+j).toString())
                     .style("stroke",color(a_i/2+a_j/2));
                 })
             })
-            dense50.forEach((activation,i)=>{
-                d3.select("#lin_dense50_"+i.toString())
-                  .style("fill",color(activation));
+            dense3.forEach((a_i,i)=>{
+                d3.select("#lin_dense3_"+i.toString())
+                .style("fill",d=>{ d.value = a_i; return color(a_i)});
             })
 
 
@@ -80,44 +101,81 @@ function renderNeuronActivations(data, datasetSelected, modelSelected, isRenderC
     if (modelSelected == 'mlp'){
         d3.json(path,(preds)=>{
             const pred = preds.filter(d=>d.id==pointId);
-            const dense44 = pred.dense_44;
-            const dense45 = pred.dense_45;
-            const dense46 = pred.dense_46;
+            const dense1 = (datasetSelected == 'test_laptop')? pred.dense_44: pred.dense_4;
+            const dense2 = (datasetSelected == 'test_laptop')? pred.dense_45: pred.dense_5;
+            const dense3 = (datasetSelected == 'test_laptop')? pred.dense_46: pred.dense_6;
             const input = pred.input;
 
-            input.forEach((activation,i)=>{
+            d3.selectAll(".neuron")
+              .on("mouseover",d=>{
+                div.transition().duration(200).style('opacity', 1)
+                .style('left', (d3.event.pageX-600) + 'px')
+                .style('top', (d3.event.pageY) + 'px');
+
+                div.html(`<h6>${d.value}</h6>`)
+
+              })
+            
+            // a_i means activation_i
+            input.forEach((a_i,i)=>{
                 d3.select("#mlp_input_"+i.toString())
-                  .style("fill",colorNode(activation));
+                  .style("fill",d=>{ d.value = a_i; return color(a_i)});
+                  dense1.forEach((a_j,j)=>{
+                    d3.select("#nn_link_"+i.toString()+'_'+ (dense1StartId+j).toString())
+                      .style("stroke",color(a_i/2+a_j/2));
+                })
             })
 
-            dense44.forEach((activation,i)=>{
-                d3.select("#mlp_dense44_"+i.toString())
-                  .style("fill",colorNode(activation));
+            dense1.forEach((a_i,i)=>{
+                d3.select("#mlp_dense1_"+i.toString())
+                    .style("fill",d=>{ d.value = a_i; return color(a_i)});
+                dense2.forEach((a_j,j)=>{
+                    d3.select("#nn_link_"+(dense1StartId+i).toString()+'_'+ (dense2StartId+j).toString())
+                      .style("stroke",color(a_i/2+a_j/2))
+                })
             })
-            dense45.forEach((activation,i)=>{
-                d3.select("#mlp_dense45_"+i.toString())
-                  .style("fill",colorNode(activation));
+            dense2.forEach((a_i,i)=>{
+                d3.select("#mlp_dense2_"+i.toString())
+                .style("fill",d=>{ d.value = a_i; return color(a_i)});
+                dense3.forEach((a_j,j)=>{
+                    d3.select("#nn_link_"+(dense2StartId+i).toString()+'_'+(dense3StartId+j).toString())
+                    .style("stroke",color(a_i/2+a_j/2));
+                })
             })
-            dense46.forEach((activation,i)=>{
-                d3.select("#mlp_dense46_"+i.toString())
-                  .style("fill",colorNode(activation));
+            dense3.forEach((a_i,i)=>{
+                d3.select("#lin_dense3_"+i.toString())
+                .style("fill",d=>{ d.value = a_i; return color(a_i)});
             })
         })
     }
     if (modelSelected == 'cnn'){
         d3.json(path,(preds)=>{
             const pred = preds.filter(d=>d.id==pointId)[0];
-            // const color = d3.scaleSequential(d3["interpolateBlues"])
             color.domain([1,0])
             const keys = Object.keys(pred);
-            console.log(keys);
+            var layerName2idxMapping;
+            if (datasetSelected == 'test_laptop'){  
+                layerName2idxMapping = {'input':'0','conv2d_3':'1','max_pooling2d_3':'2','conv2d_4':'3','max_pooling2d_4':'4'};
+            }
+            else{
+                layerName2idxMapping = {'input':'0','conv2d_1':'1','max_pooling2d_1':'2','conv2d_2':'3','max_pooling2d_2':'4'};
+            }
 
             for(var i = 0; i < 24; i++){
                 for(var j = 0; j < 32; j++){
                     keys.forEach(key=>{
                         if (key != 'id' && key !='prediction'){
-                            d3.select("#"+key+"_"+i.toString()+"_"+j.toString())
-                              .style("fill",color(pred.input[i][j]*.5 + pred[key][i][j]*.5));
+                            d3.select("#layer_"+layerName2idxMapping[key]+"_"+i.toString()+"_"+j.toString())
+                              .style("fill",d=>{
+                                  d.value = pred[key][i][j];
+                                  return color(pred.input[i][j]*.5 + d.value*.5)})
+                              .on("mouseover",(d)=>{
+                                div.transition().duration(200).style('opacity', 1)
+                                .style('left', (d3.event.pageX-600) + 'px')
+                                .style('top', (d3.event.pageY) + 'px');
+                
+                                div.html(`<h6>${d.value}</h6>`)
+                              });
                         }
                     })
                 }
@@ -126,7 +184,17 @@ function renderNeuronActivations(data, datasetSelected, modelSelected, isRenderC
             color.domain([1,0])
             for(var i=0; i < 4;i++){
                 d3.select("#pred_"+i.toString())
-                    .style("fill",color(pred["prediction"][i]));
+                    .style("fill",d=>{
+                        d.value = pred["prediction"][i];
+                        return color(pred["prediction"][i]);
+                    })
+                    .on("mouseover",(d)=>{
+                        div.transition().duration(200).style('opacity', 1)
+                        .style('left', (d3.event.pageX-600) + 'px')
+                        .style('top', (d3.event.pageY) + 'px');
+
+                        div.html(`<h6>${d.value}</h6>`);
+                      });
             }
 
 

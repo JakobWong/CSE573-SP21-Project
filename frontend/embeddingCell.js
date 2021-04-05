@@ -13,6 +13,9 @@ function LoadDataset(fileName, isRenderCorrectness){
   .on("zoom", zoomed);
 
   d3.select("#assemble_embedding").selectAll("svg").remove();
+  d3.select("#embedding_tooltip").remove();
+  // d3.select("#assemble_embedding").selectAll("div").remove();
+
   // append the svg object to the body of the page
   var svg = d3.select("#assemble_embedding")
   .append("svg")
@@ -97,7 +100,7 @@ function LoadDataset(fileName, isRenderCorrectness){
       }
       else{
        targetDistribution = d.labelDistribution;
-       color = d3.scaleOrdinal(d3.schemeCategory10)
+       color = d3.scaleOrdinal(["#1f77b4","#ff7f0e","#9467bd","#E56AB3  "])
                         .domain([0,1,2,3])
       }
 
@@ -167,7 +170,7 @@ function LoadDataset(fileName, isRenderCorrectness){
 
     if (!isRenderCorrectness){
 
-      var color = d3.scaleOrdinal(d3.schemeCategory10)
+      var color = d3.scaleOrdinal(["#1f77b4","#ff7f0e","#9467bd","#E56AB3"])
                     .domain([0,1,2,3]);
       div.selectAll("div").remove();
       div.html(

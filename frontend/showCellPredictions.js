@@ -54,7 +54,7 @@ function showCellPredictions(data, modelName){
     ]).nice();
 
     // Add dots
-    var color = d3.scaleOrdinal(d3.schemeCategory10)
+    var color = d3.scaleOrdinal(["#1f77b4","#ff7f0e","#9467bd","#E56AB3"])
                   .domain([0,1,2,3]);
 
     // Show the bars

@@ -1,13 +1,13 @@
 var modelSelected;
 
-function LoadModel(fileName){
+function LoadModel(fileName, datasetSelected){
 
     document.getElementById("embedding-check").disabled = false;
     modelSelected = fileName.split('_')[0];
     // console.log(modelSelected);
     
     // load the data
-    d3.json(fileName + "_graph.json", function(error, graph) {
+    d3.json(fileName + ".json", function(error, graph) {
 
 
         if (fileName == 'lin' || fileName == 'mlp'){
@@ -55,6 +55,7 @@ function LoadModel(fileName){
             var node = svg.append("g").selectAll(".node")
                         .data(graph.nodes)
                     .enter().append("circle")
+                    .attr("class","neuron")
                     .attr("id", d=>nameNeuron(d,modelSelected))
                     .attr("r", d=> (d.depth <= 1)? listofX[d.depth.toString()](1)/2 - listofX[d.depth.toString()](0)/2:5)
                     .attr("cx",d=> listofX[d.depth.toString()](d.index))
@@ -114,68 +115,51 @@ function LoadModel(fileName){
             var neurons = svg.append("g").selectAll(".node")
                         .data(graph.nodes)
                         .enter().append("g")
-                        .attr("id", d=>d.layerName)
+                        .attr("id", (d,i)=>i.toString())
                         .attr("transform",d=>"translate("+x(d.index)+",0)");
             
             var rects = neurons.selectAll(".rect")
                         .data(d=>d.fm)
                         .enter().append('rect')
-                        .attr('id', d=>d.layerName+"_"+d.y.toString()+"_"+d.x.toString())
+                        .attr('id', (d,i)=>"layer_"+d.i.toString()+"_"+d.y.toString()+"_"+d.x.toString())
                         .attr('width', x.bandwidth()/64*1.5)
                         .attr('height', x.bandwidth()/48*1.5)
                         .attr('x',d=>d.x*x.bandwidth()/64*1.5)
                         .attr('y',d=>d.y*x.bandwidth()/48*1.5)
                         .style("fill","grey");
             
+            var finalLayerInput = [
+                {'index':0,'value':0},
+                {'index':1,'value':0},
+                {'index':2,'value':0},
+                {'index':3,'value':0},
+            ]
             svg.append("g")
                 .selectAll(".rect")
-                .data([0,1,2,3])
+                .data(finalLayerInput)
                 .enter()
                 .append("rect")
-                .attr("id",d=>"pred_"+d.toString())
+                .attr("id",d=>"pred_"+d.index.toString())
                 .attr("x", x(5))
-                .attr("y", d=>d*75)
+                .attr("y", d=>d.index*75)
                 .attr('width', 30)
                 .attr('height', 30)
                 .style("fill","grey");
-
-            var link = svg.append("g").selectAll(".link")
-                        .data(graph.links)
-                        .enter().append("path")
-                        .attr("class", "link")
-                        // .attr("id",d=>"nn_link_"+d.source+"_"+d.target)
-                        .attr("d", d=>{
-                            var curvature = .9;
-                            var x0 = x(d.source);
-                            var y0 = 365;
-                            var x1 = x(d.target);
-                            var y1 = 365;
-                            var xi = d3.interpolateNumber(x0, x1);
-                            var x2 = xi(curvature);
-                            var x3 = xi(1 - curvature);
-                            return "M" + x0 + "," + y0
-                                    + "C" + x2 + "," + y0
-                                    + " " + x3 + "," + y1
-                                    + " " + x1 + "," + y1;
-                        })
-                        .style("stroke-width",10)
-                        .style("fill","grey")
-
         }
     })
 }
 
-function nameNeuron(d,modelSelected){
+function nameNeuron(d,modelSelected,datasetSelected){
     if (modelSelected == 'lin'){
         switch (d.depth){
             case 0:
                 return "lin_input_" + d.index.toString();
             case 1:
-                return "lin_dense48_" + d.index.toString();
+                return "lin_dense1_" + d.index.toString();
             case 2:
-                return "lin_dense49_" + d.index.toString();
+                return "lin_dense2_" + d.index.toString();
             case 3:
-                return "lin_dense50_" + d.index.toString();
+                return "lin_dense3_" + d.index.toString();
         }
     }
     if (modelSelected == 'mlp'){
@@ -183,11 +167,11 @@ function nameNeuron(d,modelSelected){
             case 0:
                 return "mlp_input_" + d.index.toString();
             case 1:
-                return "mlp_dense44_" + d.index.toString();
+                return "mlp_dense1_" + d.index.toString();
             case 2:
-                return "mlp_dense45_" + d.index.toString();
+                return "mlp_dense2_" + d.index.toString();
             case 3:
-                return "mlp_dense46_" + d.index.toString();
+                return "mlp_dense3_" + d.index.toString();
         }
     }
     
