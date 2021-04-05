@@ -10,6 +10,13 @@ A repo for our project in explainable sentimental analysis
       A image here
 
   Don't freak out, you're at the right place just that you need to select the dataset and model to see some interesting visualizations. So hit the buttons on top to select dataset and model. After that you'll be ready to start your journey.
-## Interactions
-  1. **Click a cell in the assembled embedding to reveal data points in locality** The dataset consists of six thousands 768-dimensional vectors, which are represented in 2-d scatter plots using dimensionality reduction tehcnique UMAP. Due to the scale of the dataset, it will become very cluttered if every single data point is presented in the plot. So instead of showing everything at one time, we opt to show an aggregated overview of the scatter plot where data points near to each other are aggregated into one cell and the cells instead of the datapoints are displayed. The Assembled embedding view also gives us a general picture of the data distribution without demanding much cognition.
-  2. **Click a datapoint in local UMAP view to see how it flows through the neural architecture** Each circle in the local scatter plot represents a word, orginally as a 768-d verctor embedded by BERT. The 768-d vector is processed by a neural network (linear MLP, non-linear MLP or CNN in our setting) and returned as a 4-d vectors indicating the predicted class. Upon a click of a circle, the process of its corresponding bert vector going through the network will be rendered and users can easily see what is hidden in the activation process. For example, when a neural network is not making a confident decision, activation values of the four output nodes are evenly spread. But when a neural network is confident about its prediction, activation values condense at one node.
+## The user interface
+### 1. Assembled Embedding (AE) view
+Two-dimensional representations of 768-dimensional BERT-generated vectors. The 2-d dots are then aggregated locally into multiple cells to reduce visual clutter and provide overview. The AE view also gives us a general picture of the data distribution without demanding much cognition.
+#### 1.1 Cell Design
+The size of each cell in AE view is proportional to the number of dots within the cell. The color of the cell reflects the distribution of different categories in the cell. (e.g. A cell of pure color means all the dots in the locality the cell represents are of the same class)
+#### 1.2 Click a cell to see local detail
+To reveal points in a locality, the user clicks the corresponding cell of that locality. Multiple views that present different insights of the selected locality are updated meanwhile.
+####
+  3. ****
+  4. **Explore the sentence where a target word comes from** When you hover on a datapoint in the local UMAP view, 
