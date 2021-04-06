@@ -41,6 +41,11 @@ We use a diverging barchart to showcase the performance of the selected neural a
 ### 5. Context view
 The sentence view shows the sentence (context) where the words of interest come from
 ### 6. The Neural Architecture (Network) View 
+#### 6.1 NN view for Linear Model and MLP
 For Linear NN and MLP we use node-link diagram to visualize their archietcture. Weak Links with low weights are abandoned to keep users' attention on strong links which contributes to the NN's decision making process. The darker the nodes (links) the greater the values.
-#### 6.1 Hover on nodes to see actual activation values underneath
+![linear NN](nn.PNG)
+#### 6.2 NN view for CNN
+For CNN we used Grad-Cam technique to visualize the attention each layers has on the input. The attention maps tell us where the layer is looking at on the input image, which is a word embedding reshaped to 2d.
+![CNN](cnn.PNG)
+#### 6.3 Hover on nodes to see actual activation values underneath
 
