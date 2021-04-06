@@ -4,6 +4,16 @@ A repo for our project in explainable sentimental analysis
 ## Datasets Processing
   1. For this project, we will use the most popular ABSA bechmark datasets, which are restaurant reviews from SemEval 2014(rest14), 2015(rest15), 2016(rest16). The laptop reviews, which are from SemEval 2014(laptop14), will also be used to help training the different models, all data files are in the `data` folder. For the ABSA label vocabulary categories, the possible values of the tag are B-{POS, NEG, NEU}, I-{POS, NEG, NEU}, E-{POS, NEG, NEU}, T-{POS, NEG, NEU}, S-{POS, NEG, NEU}, O-{POS, NEG, NEU}. The tagging schemes are BIEOS, IOB, OT, and inside-outside-beginning tagging. The file under`data` folder called `data preprocessing.ipynb` provides a reader machine which can split the sampeles and labels, furthermore, we assign the ABSA vocabulary categories new labels, 0 means no aspect, 1 means postive, 2 means neutral, 3 means negative.
 
+##Training Script:
+The training script has several parameters found at the top of the script. The first is "conditioning" which when set to true will normalize the data. "trainingSize" specifies how many samples from the training set you wish to use. For the laptop data set, it's best to use 2000 samples, whereas for the restaurant data set, use 1000.
+The variable "testingSize" indicates how many of the test samples you would like to test on. The variable "bertFineTune" indicates to the script whether you would like to use fine tuning when producing word vectors, and the variable "train" indicates whether the user wants to retrain a new model, or load an existing one.
+
+The variable "modelType", which can be either 'LIN', 'CNN', to 'MLP' corresponds to building a linear model, convolutional neural net, or multilayer perceptron, respectively.
+Lastly, the variable "dataType" which can be either 'rest' or 'laptop' indicates the user wishes to train or test on the laptop dataset or the rest16 dataset, respectively.
+
+The overall structure of the script is as follows: First the data is read into list structures, and then from these lists we form Bert embeddings that are placed into new structures. We then create several files to store this data, which will be used in our UI later. Next we define an evaluation function that takes a list of predictions and compares them against the training labels. From this it computes a series of metrics which are output to a file.
+Next we train a model and evaluate it based on the user defined parameters.
+Lastly we have a small section of code reserved for testing specific user-defined sentences with the chosen model.
 
 # UI usage
 ## How to run the UI
@@ -16,7 +26,7 @@ A repo for our project in explainable sentimental analysis
   ![interface](interface.PNG)
   
 ## The user interface
-The design philosophy: Neural networks are trained on dataset. Hence, a well-rounded explaination of a neural network needs to includes explaination of the dataset. A perculiar behavior of an NN is usually due to a peculiar subset of the dataset or a peculiar distribution of data points. In this work We pay a lion share of attention to augment users' ability to relate NN behaviors with dataset to attain a holistc, contextualized explaination.
+The design philosophy: Neural networks are trained on dataset. Hence, a well-rounded explanation of a neural network needs to includes explanation of the dataset. A peculiar behavior of an NN is usually due to a peculiar subset of the dataset or a peculiar distribution of data points. In this work We pay a lion share of attention to augment users' ability to relate NN behaviors with dataset to attain a holistic, contextualized explanation.
 
 ### 1. Assembled Embedding (AE) view
 Two-dimensional representations of 768-dimensional BERT-generated vectors. The 2-d dots are then aggregated locally into multiple cells to reduce visual clutter and provide overview. The AE view also gives us a general picture of the data distribution without demanding much cognition.
@@ -35,14 +45,14 @@ Hover on a datapoint and the word the datapoint represents will pop up in a tool
 #### 2.2 Click to see how the datapoint flows through the neural network
 Click a datapoint and the neural network view will be updated. Highly activated neurons are marked by dark color whereas mildly activated neurons are marked by light color. The color of the neurons relates the color of the data point so as to keep visual consistency.
 ### 3. Local Word List
-To support users inspecting datapoints at localities from multiple perspective, we also display the distribution of words of the locality of interest in a customized scrollable vertical barchart. Words appearing in the locality are grouped up in different rows, each occurence of a word has a corresponding rectangle laid in its row. Rectangles are colored identically the way the dots are colored.
-### 4. Local Diveriging Barchart
-We use a diverging barchart to showcase the performance of the selected neural arachitecture on the selected locality. Each class has a bar correspondent, the portion of correctly classified samples in a class is represented by the above-x-axis part of a bar. The misclassified portion is represented by the below-x-axis part of a bar.
+To support users inspecting data points at localities from multiple perspective, we also display the distribution of words of the locality of interest in a customized scrollable vertical barchart. Words appearing in the locality are grouped up in different rows, each occurrence of a word has a corresponding rectangle laid in its row. Rectangles are colored identically the way the dots are colored.
+### 4. Local Diverging Barchart
+We use a diverging barchart to showcase the performance of the selected neural architecture on the selected locality. Each class has a bar correspondent, the portion of correctly classified samples in a class is represented by the above-x-axis part of a bar. The misclassified portion is represented by the below-x-axis part of a bar.
 ### 5. Context view
 The sentence view shows the sentence (context) where the words of interest come from
 ### 6. The Neural Architecture (Network) View 
 #### 6.1 NN view for Linear Model and MLP
-For Linear NN and MLP we use node-link diagram to visualize their archietcture. Weak Links with low weights are abandoned to keep users' attention on strong links which contributes to the NN's decision making process. The darker the nodes (links) the greater the values.
+For Linear NN and MLP we use node-link diagram to visualize their architecture. Weak Links with low weights are abandoned to keep users' attention on strong links which contributes to the NN's decision making process. The darker the nodes (links) the greater the values.
 ![linear NN](nn.PNG)
 #### 6.2 NN view for CNN
 For CNN we used Grad-Cam technique to visualize the attention each layers has on the input. The attention maps tell us where the layer is looking at on the input image, which is a word embedding reshaped to 2d.
