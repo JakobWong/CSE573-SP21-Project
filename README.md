@@ -22,6 +22,7 @@ The user can hover on a cell to see the distribution of different classes in the
 #### 1.4 Zoom and Pan
 Scrolling the mouse on the AE view to zoom in and out. Drag on the view for panning.
 ### 2. Local UMAP Embedding View
-A scatter plot displaying dots in the selected locality is updated when the user selects a cell in AE view. Dots representing words are colored by their labels. 
+A scatter plot displaying dots in the selected locality is updated when the user selects a cell in AE view. Dots representing words are colored by their labels. The UMAP technique encodes high-dimensional data in a way that keeps proximity, meaning dots near to each other in the high-dimensional space are kept near to each other in the UMAP embedding.
+#### 2.1
   3. ****
   4. **Explore the sentence where a target word comes from** When you hover on a datapoint in the local UMAP view, 
