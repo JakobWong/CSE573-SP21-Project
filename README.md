@@ -1,6 +1,10 @@
 # CSE573-SP21-Project
 A repo for our project in explainable sentimental analysis
 
+# Datasets Processing
+## For this project, we will use the most popular ABSA bechmark datasets, which are restaurant reviews from SemEval 2014(rest14), 2015(rest15), 2016(rest16). The laptop reviews, which are from SemEval 2014(laptop14), will also be used to help training the different models, all data files are in the `data` folder. For the ABSA label vocabulary categories, the possible values of the tag are B-{POS, NEG, NEU}, I-{POS, NEG, NEU}, E-{POS, NEG, NEU}, T-{POS, NEG, NEU}, S-{POS, NEG, NEU}, O-{POS, NEG, NEU}. The tagging schemes are BIEOS, IOB, OT, and inside-outside-beginning tagging. The file under`data` folder called `data preprocessing.ipynb` provides a reader machine which can split the sampeles and labels, furthermore, we assign the ABSA vocabulary categories new labels, 0 means no aspect, 1 means postive, 2 means neutral, 3 means negative.
+
+
 # UI usage
 ## How to run the UI
   1. To view the UI, go to folder `frontend` and start a local server and render the file `explainableSentimentAnalysis.html`. You can use http.server of python to start your own local server (e.g. `python -m http.server 1008`).
