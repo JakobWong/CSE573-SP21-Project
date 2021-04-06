@@ -38,5 +38,9 @@ Click a datapoint and the neural network view will be updated. Highly activated 
 To support users inspecting datapoints at localities from multiple perspective, we also display the distribution of words of the locality of interest in a customized scrollable vertical barchart. Words appearing in the locality are grouped up in different rows, each occurence of a word has a corresponding rectangle laid in its row. Rectangles are colored identically the way the dots are colored.
 ### 4. Local Diveriging Barchart
 We use a diverging barchart to showcase the performance of the selected neural arachitecture on the selected locality. Each class has a bar correspondent, the portion of correctly classified samples in a class is represented by the above-x-axis part of a bar. The misclassified portion is represented by the below-x-axis part of a bar.
+### 5. Context view
+The sentence view shows the sentence (context) where the words of interest come from
+### 6. The Neural Architecture (Network) View 
+For Linear NN and MLP we use node-link diagram to visualize their archietcture. Weak Links with low weights are abandoned to keep users' attention on strong links which contributes to the NN's decision making process. The darker the nodes (links) the greater the values.
+#### 6.1 Hover on nodes to see actual activation values underneath
 
-  4. **Explore the sentence where a target word comes from** When you hover on a datapoint in the local UMAP view, 
