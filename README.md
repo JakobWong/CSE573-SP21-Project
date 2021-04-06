@@ -11,6 +11,8 @@ A repo for our project in explainable sentimental analysis
 
   Don't freak out, you're at the right place just that you need to select the dataset and model to see some interesting visualizations. So hit the buttons on top to select dataset and model. After that you'll be ready to start your journey.
 ## The user interface
+The design philosophy: Neural networks are trained on dataset. Hence, a well-rounded explaination of a neural network needs to includes explaination of the dataset. A perculiar behavior of an NN is usually due to a peculiar subset of the dataset or a peculiar distribution of data points. In this work We pay a lion share of attention to augment users' ability to relate NN behaviors with dataset to attain a holistc, contextualized explaination.
+
 ### 1. Assembled Embedding (AE) view
 Two-dimensional representations of 768-dimensional BERT-generated vectors. The 2-d dots are then aggregated locally into multiple cells to reduce visual clutter and provide overview. The AE view also gives us a general picture of the data distribution without demanding much cognition.
 #### 1.1 Cell Design
@@ -28,5 +30,8 @@ Hover on a datapoint and the word the datapoint represents will pop up in a tool
 #### 2.2 Click to see how the datapoint flows through the neural network
 Click a datapoint and the neural network view will be updated. Highly activated neurons are marked by dark color whereas mildly activated neurons are marked by light color. The color of the neurons relates the color of the data point so as to keep visual consistency.
 ### 3. Local Word List
+To support users inspecting datapoints at localities from multiple perspective, we also display the distribution of words of the locality of interest in a customized scrollable vertical barchart. Words appearing in the locality are grouped up in different rows, each occurence of a word has a corresponding rectangle laid in its row. Rectangles are colored identically the way the dots are colored.
+### 4. Local Diveriging Barchart
+We use a diverging barchart to showcase the performance of the selected neural arachitecture on the selected locality. Each class has a bar correspondent, the portion of correctly classified samples in a class is represented by the above-x-axis part of a bar. The misclassified portion is represented by the below-x-axis part of a bar.
 
   4. **Explore the sentence where a target word comes from** When you hover on a datapoint in the local UMAP view, 
