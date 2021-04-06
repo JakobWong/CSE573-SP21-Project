@@ -4,7 +4,7 @@ A repo for our project in explainable sentimental analysis
 ## Datasets Processing
   1. For this project, we will use the most popular ABSA bechmark datasets, which are restaurant reviews from SemEval 2014(rest14), 2015(rest15), 2016(rest16). The laptop reviews, which are from SemEval 2014(laptop14), will also be used to help training the different models, all data files are in the `data` folder. For the ABSA label vocabulary categories, the possible values of the tag are B-{POS, NEG, NEU}, I-{POS, NEG, NEU}, E-{POS, NEG, NEU}, T-{POS, NEG, NEU}, S-{POS, NEG, NEU}, O-{POS, NEG, NEU}. The tagging schemes are BIEOS, IOB, OT, and inside-outside-beginning tagging. The file under`data` folder called `data preprocessing.ipynb` provides a reader machine which can split the sampeles and labels, furthermore, we assign the ABSA vocabulary categories new labels, 0 means no aspect, 1 means postive, 2 means neutral, 3 means negative.
 
-##Training Script:
+## Training Script:
 The training script has several parameters found at the top of the script. The first is "conditioning" which when set to true will normalize the data. "trainingSize" specifies how many samples from the training set you wish to use. For the laptop data set, it's best to use 2000 samples, whereas for the restaurant data set, use 1000.
 The variable "testingSize" indicates how many of the test samples you would like to test on. The variable "bertFineTune" indicates to the script whether you would like to use fine tuning when producing word vectors, and the variable "train" indicates whether the user wants to retrain a new model, or load an existing one.
 
