@@ -23,6 +23,10 @@ The user can hover on a cell to see the distribution of different classes in the
 Scrolling the mouse on the AE view to zoom in and out. Drag on the view for panning.
 ### 2. Local UMAP Embedding View
 A scatter plot displaying dots in the selected locality is updated when the user selects a cell in AE view. Dots representing words are colored by their labels. The UMAP technique encodes high-dimensional data in a way that keeps proximity, meaning dots near to each other in the high-dimensional space are kept near to each other in the UMAP embedding.
-#### 2.1
-  3. ****
+#### 2.1 Hover to see the word
+Hover on a datapoint and the word the datapoint represents will pop up in a tooltip.
+#### 2.2 Click to see how the datapoint flows through the neural network
+Click a datapoint and the neural network view will be updated. Highly activated neurons are marked by dark color whereas mildly activated neurons are marked by light color. The color of the neurons relates the color of the data point so as to keep visual consistency.
+### 3. Local Word List
+
   4. **Explore the sentence where a target word comes from** When you hover on a datapoint in the local UMAP view, 
