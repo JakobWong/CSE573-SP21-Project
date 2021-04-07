@@ -87,6 +87,26 @@ function LoadModel(fileName, datasetSelected){
                                     + " " + x3 + "," + y1
                                     + " " + x1 + "," + y1;
                         })
+            
+            var layerNames = svg.append("g")
+                                .selectAll(".text")
+                                .data([0,1,2,3])
+                                .enter()
+                                .append("text")
+                                .attr("transform",d=>"translate(20,"+(y(d)-10)+")")
+                                .attr("font-size",20)
+                                .text(d=>{
+                                    switch (d){
+                                        case 0:
+                                            return "input";
+                                        case 1:
+                                            return "dense_1";
+                                        case 2:
+                                            return "dense_2";
+                                        case 3:
+                                            return "dense_3";
+                                    }
+                                })
         }
         if (fileName == 'cnn'){
 
@@ -145,6 +165,30 @@ function LoadModel(fileName, datasetSelected){
                 .attr('width', 30)
                 .attr('height', 30)
                 .style("fill","grey");
+            
+            var layerNames = svg.append("g")
+                .selectAll(".text")
+                .data([0,1,2,3,4,5])
+                .enter()
+                .append("text")
+                .attr("transform",d=>"translate("+x(d)+",-5)")
+                .attr("font-size",30)
+                .text(d=>{
+                    switch (d){
+                        case 0:
+                            return "input";
+                        case 1:
+                            return "conv2d";
+                        case 2:
+                            return "maxpool2d";
+                        case 3:
+                            return "conv2d";
+                        case 4:
+                            return "maxpool2d";
+                        case 5:
+                            return "dense";
+                    }
+                })
         }
     })
 }

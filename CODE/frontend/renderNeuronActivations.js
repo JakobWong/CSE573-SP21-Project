@@ -11,19 +11,20 @@ function renderNeuronActivations(data, datasetSelected, modelSelected, isRenderC
     else{
         switch (data.value){
             case 0:
-                color = d3.scaleSequential(d3["interpolateBlues"]);
+                color = d3.scaleSequential(d3["interpolatePuBu"]);
                 break;
             case 1:
-                color = d3.scaleSequential(d3["interpolateOranges"]);
+                color = d3.scaleSequential(d3["interpolateOrRd"]);
                 break;
             case 2:
                 color = d3.scaleSequential(d3["interpolatePurples"]);
                 break;
             case 3:
-                color = d3.scaleLinear()
-                          .domain([0,1])
-                          .range(["#FFCEE6","#990c58"])
-                          .interpolate(d3.interpolateHcl);
+                // color = d3.scaleLinear()
+                //           .domain([0,1])
+                //           .range(["#FFCEE6","#990c58"])
+                //           .interpolate(d3.interpolateHcl);
+                color = d3.scaleSequential(d3["interpolateRdPu"])
                 break;
         }
     }
