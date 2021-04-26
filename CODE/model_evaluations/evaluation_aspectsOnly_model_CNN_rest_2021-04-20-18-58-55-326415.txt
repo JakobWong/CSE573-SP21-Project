@@ -1,0 +1,8 @@
+Training on 2292 samples
+Testing on 407 samples
+Testing Flat Accuracy: 0.6680851063829787
+Testing Balanced Accuracy: 0.9999999978723404
+Aspect polarity accuracy: 0.6680851063829787
+Testing Precision: 0.9999999978723404
+Testing Recall: 1.0
+Testing F1 Score: 0.9999999989361702

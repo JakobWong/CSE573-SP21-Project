@@ -15,14 +15,19 @@ from tensorflow.python.keras.layers.kernelized import RandomFourierFeatures
 from data_preprocessing import *
 from datetime import datetime
 import scipy.io as sio
+import random
+from keras.callbacks import ModelCheckpoint
+random.seed('asu1')
 
+trainAspects=False
+withContext=True
 #Conditioning Flags
 conditioning=True
 
 #Other Parameters
 sentenceTest=True
 #2000 laptop, 1000 rest
-trainingSize=2000
+trainingSize=2500
 testingSize=500
 bertFineTune=True
 largeAttention=True
@@ -30,10 +35,10 @@ now = str(datetime.now())
 train=False
 
 #Model Type parameter {'MLP','CNN','LIN'}
-modelType='LIN'
+modelType='MLP'
 
 #Dataset Type Parameter {'rest','laptop'}
-dataType='laptop'
+dataType='rest'
 
 #Temporary Sample Training Set
 #samples=['the amd turin processor is better than intel','I love intel but hate amd','it is hard to say whether amd is better than intel']
@@ -109,8 +114,9 @@ def getBertEmbeddings(samples,labels):
                 bertEmbeddings.append(embeddingList)
             newLabelCount+=1
             string=str(sent)
-            string=string.replace('token ','')
-            string=string[string.find(' ')+1:]
+            if not withContext:
+                string=string.replace('token ','')
+                string=string[string.find(' ')+1:]
             string=string[string.find(' ')+1:]
             wordList.append(string)
         #Remove Incompatible Data
@@ -153,7 +159,10 @@ sio.savemat(filename1,bertTrainDict)
 #print(bertEmbeddings.shape)
 
 #Prepare results file
-file=open('model_evaluations/evaluation_model_'+modelType+'_'+dataType+'_'+now+'.txt','a')
+if trainAspects:
+    file=open('model_evaluations/evaluation_aspectsOnly_model_'+modelType+'_'+dataType+'_'+now+'.txt','a')
+else:
+    file=open('model_evaluations/evaluation_model_'+modelType+'_'+dataType+'_'+now+'.txt','a')
 
 for r in sorted(remove, reverse=True):
    del labels[r]
@@ -230,8 +239,16 @@ file3.close()
 
 #Shuffle Training Samples
 bertEmbeddings,trainingLabels=sklearn.utils.shuffle(bertEmbeddings,trainingLabels)
-
-file4=open('predictions/predictions_'+str(modelType)+'_'+str(dataType)+'.txt','w')
+if trainAspects:
+    if withContext:
+        file4=open('predictions/context_predictions_aspectsOnly_'+str(modelType)+'_'+str(dataType)+'.txt','w')
+    else:
+        file4=open('predictions/predictions_aspectsOnly_'+str(modelType)+'_'+str(dataType)+'.txt','w')
+else:
+    if withContext:
+        file4=open('predictions/context_predictions_'+str(modelType)+'_'+str(dataType)+'.txt','w')
+    else:
+        file4=open('predictions/predictions_'+str(modelType)+'_'+str(dataType)+'.txt','w')
 
 #Configure GPU
 #physical_devices=tf.config.experimental.list_physical_devices('GPU')
@@ -285,7 +302,44 @@ def evaluator(roundedPredictions):
     print('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
     file.write('Testing F1 Score: '+str(TP/(TP+0.5*(FP+FN))))
     file.write('\n')
+#print('flag')
+#print(bertEmbeddings[0])
+if trainAspects:
+    #Remove non-aspect labels:
+    items,counts=np.unique(trainingLabels,return_counts=True)
+    print('flag2')
+    print(items)
+    print(counts)
+    numPos=counts[1]
+    numNeu=counts[2]
+    numNeg=counts[3]
+    toRemoveIndices=[]
+    for i in range(len(bertEmbeddings)):
+        if trainingLabels[i]==0:
+            toRemoveIndices.append(i)
+        elif trainingLabels[i]==1 and numPos>numNeg:
+            toRemoveIndices.append(i)
+            numPos-=1
 
+    for r in reversed(toRemoveIndices):
+        bertEmbeddings=np.concatenate([bertEmbeddings[:r],bertEmbeddings[r+1:]])
+        trainingLabels=np.concatenate([trainingLabels[:r],trainingLabels[r+1:]])
+        del trainingWords[r]
+    toRemoveIndices=[]
+    for i in range(len(bertEmbeddingsTest)):
+        if testingLabels[i]==0:
+            toRemoveIndices.append(i)
+    for r in reversed(toRemoveIndices):
+        bertEmbeddingsTest=np.concatenate([bertEmbeddingsTest[:r],bertEmbeddingsTest[r+1:]])
+        testingLabels=np.concatenate([testingLabels[:r],testingLabels[r+1:]])
+        del testingWords[r]
+    #print('test')
+    #for i in range(len(trainingLabels)):
+    #    print(trainingLabels[i])
+    print('flag')
+    print(len(bertEmbeddingsTest))
+    print(len(testingLabels))
+    print(len(testingWords))
   
 if modelType=='LIN' and train:
     #Build Linear Model
@@ -315,49 +369,60 @@ if modelType=='LIN' and train:
                   metrics=['accuracy'])
     
     
-    
-    #Use Random Fourier Features to Approximate SVM 
-    #model = keras.Sequential(
-    #[
-    #    keras.Input(shape=(768,)),
-    #    RandomFourierFeatures(
-    #        output_dim=4096, scale=10.0, kernel_initializer="gaussian"
-    #    ),
-    #    layers.Dense(units=4),
-    #]
-    #)
-    #model.compile(
-    #    optimizer=keras.optimizers.Adam(learning_rate=1e-3),
-    #    loss=keras.losses.hinge,
-    #    metrics=[keras.metrics.CategoricalAccuracy(name="acc")],
-    #)
+      
     model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,verbose=2)
     #Test Model
     predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
     roundedPredictions=np.argmax(predictions,axis=-1)
-    evaluator(roundedPredictions)
+    evaluator(roundedPredictions)      
     
 elif modelType=='MLP' and train:
-    #Build MLP Model
-    model = Sequential()
-    #The following hyperparameters will be determined experimentally
-    nonLinearity='tanh'
-    batchSize=20
-    #400
-    model.add(Dense(400, input_shape=(768,), activation=nonLinearity))
-    #24
-    model.add(Dense(24, activation=nonLinearity))
-
-    #4 classes on output, softmax for probability distribution over classes
-    model.add(Dense(4, activation='softmax'))
-    model.summary()
-    model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
-                  metrics=['accuracy'])
-    model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,verbose=2)
-    #Test Model
-    predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
-    roundedPredictions=np.argmax(predictions,axis=-1)
-    evaluator(roundedPredictions)
+    if trainAspects:
+        #Build MLP Model
+        model = Sequential()
+        #The following hyperparameters will be determined experimentally
+        nonLinearity='sigmoid'
+        batchSize=20
+        #400
+        model.add(Dense(400, input_shape=(768,), activation=nonLinearity))
+        #24
+        #model.add(Dense(100, activation=nonLinearity))
+        model.add(Dense(24, activation=nonLinearity))
+        #model.add(Dense(100, activation=nonLinearity))
+        #model.add(Dense(24, activation=nonLinearity))
+        #4 classes on output, softmax for probability distribution over classes
+        model.add(Dense(4, activation='softmax'))
+        model.summary()
+        model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.00001), 
+                      metrics=['accuracy'])
+        model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,verbose=2)
+        #Test Model
+        predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
+        roundedPredictions=np.argmax(predictions,axis=-1)
+        evaluator(roundedPredictions)
+    else:
+        #Build MLP Model
+        model = Sequential()
+        #The following hyperparameters will be determined experimentally
+        nonLinearity='tanh'
+        batchSize=20
+        #400
+        model.add(Dense(400, input_shape=(768,), activation=nonLinearity))
+        #24
+        model.add(Dense(24, activation=nonLinearity))
+    
+        #4 classes on output, softmax for probability distribution over classes
+        model.add(Dense(4, activation='softmax'))
+        model.summary()
+        model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), 
+                      metrics=['accuracy'])
+        #checkpoint
+        mc = ModelCheckpoint('models/best_model.h5', monitor='val_accuracy', mode='max', verbose=1)
+        model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,callbacks=[mc],verbose=2)
+        #Test Model
+        predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
+        roundedPredictions=np.argmax(predictions,axis=-1)
+        evaluator(roundedPredictions)
            
 elif modelType=='CNN' and train:
     #Build CNN model
@@ -368,7 +433,10 @@ elif modelType=='CNN' and train:
                         MaxPool2D(pool_size=(2,2),strides=2),Flatten(),Dense(4,activation='softmax')])
     model.summary()
     model.compile(optimizer=Adam(learning_rate=0.0001),loss='sparse_categorical_crossentropy',metrics=['accuracy'])
-    model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,verbose=2)
+    #checkpoint
+    mc = ModelCheckpoint('models/best_aspectOnly_model.h5', monitor='val_accuracy', mode='max', verbose=1)
+    
+    model.fit(x=bertEmbeddings,y=trainingLabels, validation_split=0.1,epochs=30, batch_size=batchSize,callbacks=[mc],verbose=2)
     #Test Model
     predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
     roundedPredictions=np.argmax(predictions,axis=-1)
@@ -376,16 +444,21 @@ elif modelType=='CNN' and train:
     
 #Save Model
 if train:
-    model.save('models/model_'+modelType+'_'+dataType+'_'+now+'.h5')
+    if trainAspects:
+        model.save('models/model_aspectsOnly_'+modelType+'_'+dataType+'_'+now+'.h5')
+    else:
+        model.save('models/model_'+modelType+'_'+dataType+'_'+now+'.h5')
 else:
     batchSize=20
-    model=keras.models.load_model('models/model_LIN_laptop_2021-03-26-20-44-30.955765.h5')
+    model=keras.models.load_model('NECESSARYFILES/AspectModel/model_MLP_rest_aspect_discriminator.h5')
     predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
     roundedPredictions=np.argmax(predictions,axis=-1)
     evaluator(roundedPredictions)  
-    file4.close()
+
+file4.close()
     
 file.close()
+
 
 #Test Model on Specific Sentence
 if sentenceTest:
