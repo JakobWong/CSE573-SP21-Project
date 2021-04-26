@@ -3,8 +3,9 @@ function showCellDetail(data, modelSelected, isRenderCorrectness){
     width = 250 - margin.left - margin.right,
     height = 250 - margin.top - margin.bottom;
 
+    console.log(data);
     data.forEach(d=>{
-        d.value = (isRenderCorrectness)? ((d.label==d[modelSelected])?1:0):d.label;
+        d.value = (isRenderCorrectness)? ((d.label==d.pred)?1:0):d.label;
     })
 
     d3.select("#cell_detail").selectAll("svg").remove();
@@ -69,5 +70,9 @@ function showCellDetail(data, modelSelected, isRenderCorrectness){
             d3.select("#c_"+d.id)
                 .attr("r",4);
         })
-        .on("click",d=>renderNeuronActivations(d, datasetSelected, modelSelected, isRenderCorrectness))
+        .on("click",d=>{
+            renderNeuronActivations(d, datasetSelected, 'cnn', isRenderCorrectness);
+            renderNeuronActivations(d, datasetSelected, 'mlp', isRenderCorrectness);
+
+        })
 }

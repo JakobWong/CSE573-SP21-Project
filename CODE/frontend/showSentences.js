@@ -30,7 +30,7 @@ function showSentences(data, modelSelected, isRenderCorrectness){
         
         dataPointsLinked.forEach(d=>{
             // console.log(d.label, d[modelSelected],d);
-            d.value = (isRenderCorrectness)? ((d.label==d[modelSelected])?1:0):d.label;
+            d.value = (isRenderCorrectness)? ((d.label==d.pred)?1:0):d.label;
             d.row = sentenceIndices.filter(i=>i==d.s_i)[0];
         })
 

@@ -18,8 +18,8 @@
   .link {
     fill: none;
     stroke:grey;
-    stroke-width:.5;
-    stroke-opacity: .1;
+    stroke-width:1;
+    stroke-opacity: .5;
   }
 
   .box {
@@ -79,9 +79,7 @@
             Select a Model
           </button>
           <div class="dropdown-menu">
-            <button id="btn-lin" class="dropdown-item btn-sm">LIN</button>
-            <button id="btn-mlp" class="dropdown-item btn-sm">MLP</button>
-            <button id="btn-cnn" class="dropdown-item btn-sm">CNN</button>
+            <button id="btn-two-classifier" class="dropdown-item btn-sm">two-classifier</button>
           </div>
         </div>
       </div>
@@ -91,7 +89,6 @@
             Select a Dataset
           </button>
           <div class="dropdown-menu">
-            <button id="btn-test-laptop" class="dropdown-item btn-sm">test_laptop</button>
             <button id="btn-test-rest" class="dropdown-item btn-sm">test_rest</button>
           </div>
         </div>
@@ -133,8 +130,11 @@
         </div>
       </div>
       <div class="col-sm-9">
-        <div id="nn" class="card" >
-          <h6 class="card-title">Neural Network</h6>
+        <div id="mlp" class="card" >
+          <h6 class="card-title">Asepect Discriminator</h6>
+        </div>
+        <div id="cnn" class="card" >
+          <h6 class="card-title">Sentiment Classifier</h6>
         </div>
         <div class="card" style="width:2000px;height:400px;overflow:scroll">
           <h6 class="card-title">Sentence View</h6>
@@ -161,6 +161,7 @@
     <script src="embeddingCell.js"></script>
     <script src="index.js"></script>
     <script src="https://code.jquery.com/jquery.js"></script>
+
 
   </body>
 </html>
