@@ -85,15 +85,16 @@ function LoadDataset(fileName, isRenderCorrectness){
                                 .range([0,1]);
 
       if (isRenderCorrectness){
-        if (modelSelected == "cnn"){
-          targetDistribution = d.cnnCorrectnessDistribution;
-        }
-        if (modelSelected == "lin"){
-          targetDistribution = d.linCorrectnessDistribution;
-        }
-        if (modelSelected == "mlp"){
-          targetDistribution = d.mlpCorrectnessDistribution;
-        }
+        // if (modelSelected == "cnn"){
+        //   targetDistribution = d.cnnCorrectnessDistribution;
+        // }
+        // if (modelSelected == "lin"){
+        //   targetDistribution = d.linCorrectnessDistribution;
+        // }
+        // if (modelSelected == "mlp"){
+        //   targetDistribution = d.mlpCorrectnessDistribution;
+        // }
+        targetDistribution = d.correctnessDistribution;
         color = d3.scaleOrdinal()
                   .domain([0,1])
                   .range([d3.schemeCategory10[3],d3.schemeCategory10[2]]);

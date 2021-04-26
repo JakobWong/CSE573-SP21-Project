@@ -4,7 +4,6 @@ function LoadModel(fileName, datasetSelected){
 
     document.getElementById("embedding-check").disabled = false;
     modelSelected = fileName.split('_')[0];
-    // console.log(modelSelected);
     
     // load the data
     d3.json(fileName + ".json", function(error, graph) {
@@ -17,10 +16,10 @@ function LoadModel(fileName, datasetSelected){
             var width = 2000 - margin.left - margin.right;
             var height = 600 - margin.top - margin.bottom;
 
-            d3.select("#nn").selectAll("svg").remove();
+            d3.select("#mlp").selectAll("svg").remove();
 
             // append the svg object to the body of the page
-            var svg = d3.select("#nn").append("svg")
+            var svg = d3.select("#mlp").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -115,10 +114,10 @@ function LoadModel(fileName, datasetSelected){
             var width = 2000 - margin.left - margin.right;
             var height = 350 - margin.top - margin.bottom;
 
-            d3.select("#nn").selectAll("svg").remove();
+            d3.select("#cnn").selectAll("svg").remove();
 
             // append the svg object to the body of the page
-            var svg = d3.select("#nn").append("svg")
+            var svg = d3.select("#cnn").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
             .append("g")

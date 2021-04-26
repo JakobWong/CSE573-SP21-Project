@@ -9,7 +9,7 @@ function showCellPredictions(data, modelName){
         if (resultsByLabel[label] == undefined){
             resultsByLabel[label] = {"correct":0,"incorrect":0};
         }
-        if (d.label == d[modelName]){
+        if (d.label == d.pred){
             resultsByLabel[label]['correct'] += 1;
         }
         else{
