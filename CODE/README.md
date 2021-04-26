@@ -8,12 +8,18 @@ A repo for our project in explainable sentimental analysis
 The training script has several parameters found at the top of the script. The first is "conditioning" which when set to true will normalize the data. "trainingSize" specifies how many samples from the training set you wish to use. For the laptop data set, it's best to use 2000 samples, whereas for the restaurant data set, use 1000.
 The variable "testingSize" indicates how many of the test samples you would like to test on. The variable "bertFineTune" indicates to the script whether you would like to use fine tuning when producing word vectors, and the variable "train" indicates whether the user wants to retrain a new model, or load an existing one.
 
+The variable trainAspects is used to decide whether training should only occur with samples labelled with either 1,2, or 3 (POS,NEU,NEG). This will be the case if true, and will cause the script to run longer to remove all non-aspect samples.
+
 The variable "modelType", which can be either 'LIN', 'CNN', to 'MLP' corresponds to building a linear model, convolutional neural net, or multilayer perceptron, respectively.
 Lastly, the variable "dataType" which can be either 'rest' or 'laptop' indicates the user wishes to train or test on the laptop dataset or the rest16 dataset, respectively.
 
 The overall structure of the script is as follows: First the data is read into list structures, and then from these lists we form Bert embeddings that are placed into new structures. We then create several files to store this data, which will be used in our UI later. Next we define an evaluation function that takes a list of predictions and compares them against the training labels. From this it computes a series of metrics which are output to a file.
 Next we train a model and evaluate it based on the user defined parameters.
 Lastly we have a small section of code reserved for testing specific user-defined sentences with the chosen model.
+
+NOTE: The folders labelled "Models" and Evaluations" contain preliminary models. All final results are in the folder labelled "FinalModelResults".
+
+Please contact jwweber@asu.edu if there are any questions here.
 
 # UI usage
 ## How to run the UI

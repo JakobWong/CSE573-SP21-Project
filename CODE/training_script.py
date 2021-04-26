@@ -19,7 +19,7 @@ import random
 from keras.callbacks import ModelCheckpoint
 random.seed('asu1')
 
-trainAspects=False
+trainAspects=True
 withContext=True
 #Conditioning Flags
 conditioning=True
@@ -35,7 +35,7 @@ now = str(datetime.now())
 train=False
 
 #Model Type parameter {'MLP','CNN','LIN'}
-modelType='MLP'
+modelType='CNN'
 
 #Dataset Type Parameter {'rest','laptop'}
 dataType='rest'
@@ -259,31 +259,58 @@ else:
 def evaluator(roundedPredictions):
     
     #Produce Accuracy (Polarity Identification) and F1 score (aspect identification)
-    correct=0
-    correctAspect=0
-    totalAspects=0
-    TP,FP,FN,TN=0,0,0,0
-    for i in range(len(roundedPredictions)):
-        if testingLabels[i] in [1,2,3]:
-            totalAspects+=1
-        if roundedPredictions[i]==testingLabels[i]:
-            correct+=1
-            if testingLabels[i]  in [1,2,3]:
-                correctAspect+=1
-        if roundedPredictions[i] in [1,2,3] and testingLabels[i] in [1,2,3]:
-            TP+=1
-        elif roundedPredictions[i] in [1,2,3] and testingLabels[i]==0:
-            FP+=1
-        elif roundedPredictions[i]==0 and testingLabels[i] in [1,2,3]:
-            FN+=1
-        elif roundedPredictions[i]==0 and testingLabels[i] ==0:
-            TN+=1
-        file4.write(str(testingWords[i])+' '+str(roundedPredictions[i]))
-        file4.write('\n')
-    if TP==0:
-        TP=0.000001
-    if FP==0:
-        FP=0.000001
+    if not trainAspects:
+        correct=0
+        correctAspect=0
+        totalAspects=0
+        TP,FP,FN,TN=0,0,0,0
+        for i in range(len(roundedPredictions)):
+            if testingLabels[i] in [1,2,3]:
+                totalAspects+=1
+            if roundedPredictions[i]==testingLabels[i]:
+                correct+=1
+                if testingLabels[i]  in [1,2,3]:
+                    correctAspect+=1
+            if roundedPredictions[i] in [1,2,3] and testingLabels[i] in [1,2,3]:
+                TP+=1
+            elif roundedPredictions[i] in [1,2,3] and testingLabels[i]==0:
+                FP+=1
+            elif roundedPredictions[i]==0 and testingLabels[i] in [1,2,3]:
+                FN+=1
+            elif roundedPredictions[i]==0 and testingLabels[i] ==0:
+                TN+=1
+            file4.write(str(testingWords[i])+' '+str(roundedPredictions[i]))
+            file4.write('\n')
+        if TP==0:
+            TP=0.000001
+        if FP==0:
+            FP=0.000001
+    else:
+        correct=0
+        correctAspect=0
+        totalAspects=0
+        TP,FP,FN,TN=0,0,0,0
+        for i in range(len(roundedPredictions)):
+            if testingLabels[i] in [1,2,3]:
+                totalAspects+=1
+            if roundedPredictions[i]==testingLabels[i]:
+                correct+=1
+                if testingLabels[i]  in [1,2,3]:
+                    correctAspect+=1
+            if roundedPredictions[i] ==1 and testingLabels[i] ==1:
+                TP+=1
+            elif roundedPredictions[i] ==1 and testingLabels[i]==3:
+                FP+=1
+            elif roundedPredictions[i]==3 and testingLabels[i] ==1:
+                FN+=1
+            elif roundedPredictions[i]==3 and testingLabels[i] ==3:
+                TN+=1
+            file4.write(str(testingWords[i])+' '+str(roundedPredictions[i]))
+            file4.write('\n')
+        if TP==0:
+            TP=0.000001
+        if FP==0:
+            FP=0.000001
     print('Testing Flat Accuracy: '+str(correct/len(roundedPredictions)))
     file.write('Testing Flat Accuracy: '+str(correct/len(roundedPredictions)))
     file.write('\n')
@@ -450,7 +477,7 @@ if train:
         model.save('models/model_'+modelType+'_'+dataType+'_'+now+'.h5')
 else:
     batchSize=20
-    model=keras.models.load_model('NECESSARYFILES/AspectModel/model_MLP_rest_aspect_discriminator.h5')
+    model=keras.models.load_model('NECESSARYFILES/SentimentModel/model_aspectsOnly_CNN_rest_2021-04-21-12-58-22-484344.h5')
     predictions=model.predict(x=bertEmbeddingsTest,batch_size=batchSize,verbose=0)
     roundedPredictions=np.argmax(predictions,axis=-1)
     evaluator(roundedPredictions)  
