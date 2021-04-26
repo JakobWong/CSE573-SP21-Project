@@ -4,7 +4,6 @@ function LoadModel(fileName, datasetSelected){
 
     document.getElementById("embedding-check").disabled = false;
     modelSelected = fileName.split('_')[0];
-    // console.log(modelSelected);
     
     // load the data
     d3.json(fileName + ".json", function(error, graph) {
@@ -17,10 +16,10 @@ function LoadModel(fileName, datasetSelected){
             var width = 2000 - margin.left - margin.right;
             var height = 600 - margin.top - margin.bottom;
 
-            d3.select("#nn").selectAll("svg").remove();
+            d3.select("#mlp").selectAll("svg").remove();
 
             // append the svg object to the body of the page
-            var svg = d3.select("#nn").append("svg")
+            var svg = d3.select("#mlp").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -87,6 +86,26 @@ function LoadModel(fileName, datasetSelected){
                                     + " " + x3 + "," + y1
                                     + " " + x1 + "," + y1;
                         })
+            
+            var layerNames = svg.append("g")
+                                .selectAll(".text")
+                                .data([0,1,2,3])
+                                .enter()
+                                .append("text")
+                                .attr("transform",d=>"translate(20,"+(y(d)-10)+")")
+                                .attr("font-size",20)
+                                .text(d=>{
+                                    switch (d){
+                                        case 0:
+                                            return "input";
+                                        case 1:
+                                            return "dense_1";
+                                        case 2:
+                                            return "dense_2";
+                                        case 3:
+                                            return "dense_3";
+                                    }
+                                })
         }
         if (fileName == 'cnn'){
 
@@ -95,10 +114,10 @@ function LoadModel(fileName, datasetSelected){
             var width = 2000 - margin.left - margin.right;
             var height = 350 - margin.top - margin.bottom;
 
-            d3.select("#nn").selectAll("svg").remove();
+            d3.select("#cnn").selectAll("svg").remove();
 
             // append the svg object to the body of the page
-            var svg = d3.select("#nn").append("svg")
+            var svg = d3.select("#cnn").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -145,6 +164,30 @@ function LoadModel(fileName, datasetSelected){
                 .attr('width', 30)
                 .attr('height', 30)
                 .style("fill","grey");
+            
+            var layerNames = svg.append("g")
+                .selectAll(".text")
+                .data([0,1,2,3,4,5])
+                .enter()
+                .append("text")
+                .attr("transform",d=>"translate("+x(d)+",-5)")
+                .attr("font-size",30)
+                .text(d=>{
+                    switch (d){
+                        case 0:
+                            return "input";
+                        case 1:
+                            return "conv2d";
+                        case 2:
+                            return "maxpool2d";
+                        case 3:
+                            return "conv2d";
+                        case 4:
+                            return "maxpool2d";
+                        case 5:
+                            return "dense";
+                    }
+                })
         }
     })
 }
